@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+body {
+  @apply bg-ink-50 text-ink-900 antialiased;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* iPhone safe-area helpers, used throughout so content never sits under the
+   notch/Dynamic Island or the home indicator when running standalone. */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.safe-x {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Large, thumb-friendly tap targets everywhere per the spec's "large
+   iPhone-friendly controls" requirement. */
+button,
+a,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.tap-target {
+  min-height: 48px;
+}
+
+::selection {
+  background: theme('colors.brand.200');
+}
+
+/* Prevent iOS Safari from zooming in on focus for inputs under 16px */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
