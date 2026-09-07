@@ -38,6 +38,7 @@ export async function updateSession(request: NextRequest) {
   const isPublic =
     path.startsWith('/login') ||
     path.startsWith('/signup') ||
+    path.startsWith('/auth/confirm') || // email confirmation link lands here, pre-session
     path.startsWith('/opt-out') ||
     path.startsWith('/docs') || // Shortcut build guide is meant to be readable pre-login too
     path.startsWith('/api/opt-out') ||
