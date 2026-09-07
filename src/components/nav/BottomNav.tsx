@@ -8,6 +8,7 @@ const items = [
   { href: '/home', label: 'Home', icon: '🏠' },
   { href: '/contacts', label: 'Contacts', icon: '👥' },
   { href: '/campaigns', label: 'Campaigns', icon: '📣' },
+  { href: '/community', label: 'Groups', icon: '🤝' },
   { href: '/messages', label: 'Messages', icon: '💬' },
   { href: '/settings', label: 'Settings', icon: '⚙️' },
 ]
