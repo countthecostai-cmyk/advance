@@ -45,6 +45,9 @@ export type Profile = {
   daily_send_cap: number
   max_recipients_per_campaign: number
   min_seconds_between_campaigns: number
+  // Added by 0004_community_schema.sql for the Groups/Community module.
+  avatar_url: string | null
+  birthday: string | null
   shortcut_configured_at: string | null
   test_mode_confirmed_at: string | null
   created_at: string
@@ -182,6 +185,105 @@ export type AuditLog = {
   created_at: string
 }
 
+// ---------------------------------------------------------------------------
+// Groups/Community module (0004_community_schema.sql, 0005_community_rls.sql).
+// A second product surface — churches, teams, nonprofits, schools, clubs —
+// living alongside the mass-texting tables above. See src/lib/terminology.ts
+// for how `vertical` maps to the words shown in the UI.
+// ---------------------------------------------------------------------------
+
+export type Vertical = 'church' | 'nonprofit' | 'business' | 'education' | 'community'
+export type OrgRole = 'admin' | 'leader' | 'member'
+export type GroupRole = 'leader' | 'member'
+export type RsvpStatus = 'going' | 'maybe' | 'not_going' | 'no_response'
+export type AttendanceStatus = 'present' | 'absent' | 'excused' | 'guest'
+
+export type Organization = {
+  id: string
+  name: string
+  slug: string
+  vertical: Vertical
+  created_at: string
+}
+
+export type Ministry = {
+  id: string
+  organization_id: string
+  name: string
+  description: string | null
+  created_at: string
+}
+
+export type OrganizationMember = {
+  id: string
+  organization_id: string
+  user_id: string
+  role: OrgRole
+  created_at: string
+}
+
+export type CommunityGroup = {
+  id: string
+  organization_id: string
+  ministry_id: string | null
+  name: string
+  description: string | null
+  image_url: string | null
+  group_type: string
+  meeting_schedule: string | null
+  location: string | null
+  created_by: string | null
+  created_at: string
+}
+
+export type CommunityGroupMember = {
+  id: string
+  group_id: string
+  user_id: string
+  role: GroupRole
+  joined_at: string
+}
+
+export type CommunityEvent = {
+  id: string
+  organization_id: string
+  group_id: string | null
+  title: string
+  description: string | null
+  location: string | null
+  virtual_link: string | null
+  starts_at: string
+  ends_at: string | null
+  rsvp_deadline: string | null
+  capacity: number | null
+  is_recurring: boolean
+  recurrence_rule: string | null
+  parent_event_id: string | null
+  created_by: string | null
+  created_at: string
+}
+
+export type Rsvp = {
+  id: string
+  event_id: string
+  user_id: string
+  status: RsvpStatus
+  responded_at: string | null
+  reminder_count: number
+  last_reminded_at: string | null
+  updated_at: string
+}
+
+export type CommunityAttendance = {
+  id: string
+  event_id: string
+  user_id: string | null
+  guest_name: string | null
+  status: AttendanceStatus
+  recorded_by: string | null
+  recorded_at: string
+}
+
 // Minimal Database generic so `createClient<Database>()` type-checks table
 // access without hand-maintaining Supabase's full generated shape.
 //
@@ -292,6 +394,54 @@ export type Database = {
         Row: AuditLog
         Insert: Partial<AuditLog> & { action: string }
         Update: Partial<AuditLog>
+        Relationships: []
+      }
+      organizations: {
+        Row: Organization
+        Insert: Partial<Organization> & { name: string; slug: string }
+        Update: Partial<Organization>
+        Relationships: []
+      }
+      ministries: {
+        Row: Ministry
+        Insert: Partial<Ministry> & { organization_id: string; name: string }
+        Update: Partial<Ministry>
+        Relationships: []
+      }
+      organization_members: {
+        Row: OrganizationMember
+        Insert: Partial<OrganizationMember> & { organization_id: string; user_id: string }
+        Update: Partial<OrganizationMember>
+        Relationships: []
+      }
+      groups: {
+        Row: CommunityGroup
+        Insert: Partial<CommunityGroup> & { organization_id: string; name: string }
+        Update: Partial<CommunityGroup>
+        Relationships: []
+      }
+      group_members: {
+        Row: CommunityGroupMember
+        Insert: Partial<CommunityGroupMember> & { group_id: string; user_id: string }
+        Update: Partial<CommunityGroupMember>
+        Relationships: []
+      }
+      events: {
+        Row: CommunityEvent
+        Insert: Partial<CommunityEvent> & { organization_id: string; title: string; starts_at: string }
+        Update: Partial<CommunityEvent>
+        Relationships: []
+      }
+      rsvps: {
+        Row: Rsvp
+        Insert: Partial<Rsvp> & { event_id: string; user_id: string }
+        Update: Partial<Rsvp>
+        Relationships: []
+      }
+      attendance: {
+        Row: CommunityAttendance
+        Insert: Partial<CommunityAttendance> & { event_id: string; status: AttendanceStatus }
+        Update: Partial<CommunityAttendance>
         Relationships: []
       }
     }
