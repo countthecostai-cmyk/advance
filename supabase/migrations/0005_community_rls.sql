@@ -96,7 +96,7 @@ create policy "rsvps_self_insert" on rsvps for insert with check (user_id = auth
 create policy "rsvps_self_update" on rsvps for update using (user_id = auth.uid());
 
 create policy "attendance_select_groupmates" on attendance for select
-  using (exists (select 1 from events e where e.id = event_id and (is_group_leader(e.group_id) or is_org_admin(e.organization_id))));
+  using (exists (select 1 from events e where e.id = event_id and (is_group_member(e.group_id) or is_org_admin(e.organization_id))));
 create policy "attendance_leader_manage" on attendance for all
   using (exists (select 1 from events e where e.id = event_id and (is_group_leader(e.group_id) or is_org_admin(e.organization_id))))
   with check (exists (select 1 from events e where e.id = event_id and (is_group_leader(e.group_id) or is_org_admin(e.organization_id))));
