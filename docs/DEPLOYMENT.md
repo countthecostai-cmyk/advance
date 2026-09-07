@@ -11,7 +11,11 @@ no separate backend service — two pieces total.
    supabase/migrations/0001_init.sql
    supabase/migrations/0002_rls.sql
    supabase/migrations/0003_functions.sql
+   supabase/migrations/0004_community_schema.sql
+   supabase/migrations/0005_community_rls.sql
    ```
+   (0004/0005 add the Groups & Community module — see `docs/COMMUNITY.md` —
+   and only ever add columns/tables, never touch 0001-0003's.)
    Either via the Supabase SQL editor (paste each file, run in order) or the
    Supabase CLI: `supabase db push` with these files in
    `supabase/migrations/`.

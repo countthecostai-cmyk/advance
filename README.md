@@ -1,9 +1,21 @@
 # Advance
 
-A mobile-first Progressive Web App for managing mass-texting campaigns that
-actually send through **Apple Messages, from the user's own iPhone number**
-— via a companion iPhone Shortcut, using only publicly supported Apple
-capabilities. No Twilio, no virtual numbers, no private APIs.
+A mobile-first Progressive Web App with two product surfaces sharing one
+account, one login, and one Supabase project:
+
+1. **Mass texting** — campaigns that actually send through **Apple Messages,
+   from the user's own iPhone number** via a companion iPhone Shortcut, using
+   only publicly supported Apple capabilities. No Twilio, no virtual numbers,
+   no private APIs.
+2. **Groups & Community** (`/community`) — organizations, groups, events,
+   RSVP, and attendance. Built church-first (Life Groups, ministries) but the
+   same schema serves any org that runs recurring groups: businesses (teams),
+   nonprofits (chapters), schools (classes), community clubs. See
+   `docs/COMMUNITY.md` and `src/lib/terminology.ts`.
+
+The two surfaces are independent — different tables, different nav tab,
+different `/api` namespace (`/api/community/*`) — so neither can break the
+other. They share only `profiles` (extended, not replaced) and Supabase auth.
 
 ## Why it's built this way
 
@@ -41,20 +53,24 @@ cp .env.example .env.local   # fill in your Supabase project + secrets
 npm run dev
 ```
 
-Then follow `docs/DEPLOYMENT.md` to provision Supabase (run the three SQL
-migrations in `supabase/migrations/`) and deploy — a real HTTPS deployment
-is required to test the Shortcut/PWA install flow; `localhost` cannot be
-reached from the Shortcuts app on a phone.
+Then follow `docs/DEPLOYMENT.md` to provision Supabase (run all five SQL
+migrations in `supabase/migrations/`, in order) and deploy — a real HTTPS
+deployment is required to test the Shortcut/PWA install flow; `localhost`
+cannot be reached from the Shortcuts app on a phone.
 
 ## Docs
 
-- `docs/ARCHITECTURE.md` — stack, data model, request flow, directory map.
+- `docs/ARCHITECTURE.md` — stack, data model, request flow, directory map
+  (mass-texting surface).
+- `docs/COMMUNITY.md` — the Groups & Community module: data model, the
+  vertical/terminology system, RLS/privacy model, what's built vs. not yet.
 - `docs/APPLE_SHORTCUTS.md` — the Shortcut integration in full: how it
   works, researched platform limitations, why chunking, honest status
   vocabulary. Mirrored for end users at `/docs/shortcut` (build guide) and
   `/docs/apple-shortcuts-explainer` (plain-language why) in the app itself.
 - `docs/COMPLIANCE.md` — consent, opt-out/STOP handling and its real
-  limitation, suppression list, rate limits, audit logs.
+  limitation, suppression list, rate limits, audit logs (mass-texting surface
+  only — the Groups module has no SMS sending yet, see docs/COMMUNITY.md).
 - `docs/DEPLOYMENT.md` — step-by-step Supabase + hosting setup.
 
 ## What's here vs. what needs a real iPhone to finish verifying
