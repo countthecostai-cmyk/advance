@@ -28,7 +28,7 @@ export default function NewCampaignPage() {
   const [isTestMode, setIsTestMode] = useState(false)
   const [scheduledAt, setScheduledAt] = useState('')
   const [includeFooter, setIncludeFooter] = useState(true)
-  const [rateLimitSeconds, setRateLimitSeconds] = useState(3)
+  const [rateLimitSeconds, setRateLimitSeconds] = useState(2)
   const [chunkSize, setChunkSize] = useState(20)
   const [showAdvanced, setShowAdvanced] = useState(false)
 
