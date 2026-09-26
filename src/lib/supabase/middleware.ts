@@ -6,6 +6,28 @@ import { NextResponse, type NextRequest } from 'next/server'
 // user having to sign in again — this is what makes auth "persistent" for a
 // standalone Home Screen app, which has no access to another tab's session.
 export async function updateSession(request: NextRequest) {
+  const path = request.nextUrl.pathname
+  const isPublic =
+    path.startsWith('/login') ||
+    path.startsWith('/signup') ||
+    path.startsWith('/auth/confirm') || // email confirmation link lands here, pre-session
+    path.startsWith('/opt-out') ||
+    path.startsWith('/docs') || // Shortcut build guide is meant to be readable pre-login too
+    path.startsWith('/api/opt-out') ||
+    path.startsWith('/api/shortcut') || // authenticated via signed token, not a session
+    path === '/manifest.webmanifest' ||
+    path === '/sw.js' ||
+    path.startsWith('/icons')
+
+  // Public routes (including the Shortcut's own /api/shortcut calls) never
+  // need a session, so they skip Supabase Auth entirely. This matters beyond
+  // performance: if Supabase Auth is ever slow or unreachable (e.g. a paused
+  // free-tier project), we don't want that to also break the one endpoint
+  // the Shortcut depends on to fetch its batch.
+  if (isPublic) {
+    return NextResponse.next({ request: { headers: request.headers } })
+  }
+
   let response = NextResponse.next({ request: { headers: request.headers } })
 
   const supabase = createServerClient(
@@ -34,20 +56,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const path = request.nextUrl.pathname
-  const isPublic =
-    path.startsWith('/login') ||
-    path.startsWith('/signup') ||
-    path.startsWith('/auth/confirm') || // email confirmation link lands here, pre-session
-    path.startsWith('/opt-out') ||
-    path.startsWith('/docs') || // Shortcut build guide is meant to be readable pre-login too
-    path.startsWith('/api/opt-out') ||
-    path.startsWith('/api/shortcut') || // authenticated via signed token, not a session
-    path === '/manifest.webmanifest' ||
-    path === '/sw.js' ||
-    path.startsWith('/icons')
-
-  if (!user && !isPublic) {
+  if (!user) {
     const redirectUrl = new URL('/login', request.url)
     redirectUrl.searchParams.set('next', path)
     return NextResponse.redirect(redirectUrl)
