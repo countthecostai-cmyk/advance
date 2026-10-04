@@ -52,9 +52,23 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // Supabase Auth can occasionally be slow or flaky (e.g. right after a
+  // paused free-tier project wakes back up). Without a timeout here, a slow
+  // auth call hangs this edge function until Vercel force-kills it at 25s,
+  // which the visitor sees as a dead "This request timed out" page instead
+  // of anything Advance controls. Capping it at 8s means a flaky Supabase
+  // instead sends the visitor to /login quickly — not perfect, but fast and
+  // recoverable, rather than a frozen page.
+  let user = null
+  try {
+    const result = await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('auth timeout')), 8000)),
+    ])
+    user = result.data.user
+  } catch {
+    user = null
+  }
 
   if (!user) {
     const redirectUrl = new URL('/login', request.url)
