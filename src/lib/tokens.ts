@@ -106,6 +106,28 @@ export function verifyOptOutToken(token: string): OptOutTokenPayload | null {
   return parseBase64urlJson<OptOutTokenPayload>(encoded)
 }
 
+// -----------------------------------------------------------------------
+// Contacts-import Shortcut tokens
+//
+// A personal, long-lived link embedded once into the "Add to Advance"
+// Shortcut a person builds on their iPhone (see /docs/import-contacts).
+// Unlike the per-send shortcut session tokens above, this isn't tied to a
+// campaign or an expiry — it behaves like an API key: opaque random bytes,
+// never stored in cleartext (only sha256(token) lives in
+// profiles.contacts_import_token_hash), and regenerating it from Settings
+// immediately invalidates the old one.
+// -----------------------------------------------------------------------
+
+export function createContactsImportToken(): { token: string; tokenHash: string } {
+  const token = randomBytes(24).toString('base64url')
+  const tokenHash = createHash('sha256').update(token).digest('hex')
+  return { token, tokenHash }
+}
+
+export function hashContactsImportToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex')
+}
+
 function requireEnv(name: string): string {
   const value = process.env[name]
   if (!value) throw new Error(`${name} is not configured on the server`)

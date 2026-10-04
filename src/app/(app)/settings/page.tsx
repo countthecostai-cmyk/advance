@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ShortcutOnboarding } from '@/components/settings/ShortcutOnboarding'
+import { ContactsImportCard } from '@/components/settings/ContactsImportCard'
 import { TestModeCard } from '@/components/settings/TestModeCard'
 import { SuppressionListCard } from '@/components/settings/SuppressionListCard'
 import { createClient } from '@/lib/supabase/client'
@@ -70,6 +71,11 @@ export default function SettingsPage() {
         <ShortcutOnboarding
           configured={!!profile.shortcut_configured_at}
           onConfirm={() => updateProfile({ mark_shortcut_configured: true })}
+        />
+
+        <ContactsImportCard
+          configured={!!profile.contacts_import_configured_at}
+          onConfirm={() => updateProfile({ mark_contacts_import_configured: true } as any)}
         />
 
         <TestModeCard

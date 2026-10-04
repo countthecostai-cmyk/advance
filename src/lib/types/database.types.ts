@@ -50,6 +50,10 @@ export type Profile = {
   birthday: string | null
   shortcut_configured_at: string | null
   test_mode_confirmed_at: string | null
+  // Added by 0006_contacts_import_token.sql for the "Add to Advance"
+  // contacts-import Shortcut. Only a hash is ever stored server-side.
+  contacts_import_token_hash: string | null
+  contacts_import_configured_at: string | null
   created_at: string
   updated_at: string
 }

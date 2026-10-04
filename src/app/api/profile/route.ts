@@ -13,6 +13,8 @@ const profileUpdateSchema = z.object({
   // boolean flag rather than accepting a client-supplied timestamp — the
   // server stamps `now()` itself.
   mark_shortcut_configured: z.boolean().optional(),
+  // Same pattern, for the separate "Add to Advance" contacts-import Shortcut.
+  mark_contacts_import_configured: z.boolean().optional(),
 })
 
 export async function GET() {
@@ -50,6 +52,9 @@ export async function PATCH(request: NextRequest) {
   }
   if (parsed.data.mark_shortcut_configured) {
     update.shortcut_configured_at = new Date().toISOString()
+  }
+  if (parsed.data.mark_contacts_import_configured) {
+    update.contacts_import_configured_at = new Date().toISOString()
   }
 
   const { data: profile, error } = await supabase.from('profiles').update(update).eq('id', user.id).select().single()
