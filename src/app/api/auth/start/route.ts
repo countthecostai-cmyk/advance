@@ -32,6 +32,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: phone.reason || 'Invalid phone number' }, { status: 400 })
   }
 
+  // TEMP diagnostic: bypass supabase-js entirely and hit the admin endpoint
+  // with a raw fetch, so we get the real HTTP status / network error instead
+  // of supabase-js's wrapped (and detail-stripped) AuthRetryableFetchError.
+  try {
+    const raw = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users?page=1&per_page=1`, {
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+    })
+    const rawText = await raw.text()
+    console.error('auth/start raw admin fetch result', { status: raw.status, body: rawText.slice(0, 500) })
+  } catch (rawErr: any) {
+    console.error('auth/start raw admin fetch threw', {
+      message: rawErr?.message,
+      name: rawErr?.name,
+      cause: rawErr?.cause ? String(rawErr.cause) : undefined,
+      causeCode: rawErr?.cause?.code,
+      stack: rawErr?.stack?.split('\n').slice(0, 4).join(' | '),
+    })
+  }
+
   const admin = createServiceRoleSupabase()
 
   // Internal-only identifier — never emailed, never shown to the person.
