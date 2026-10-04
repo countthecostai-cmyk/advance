@@ -46,6 +46,15 @@ export async function POST(request: NextRequest) {
   })
 
   if (createError || !created.user) {
+    // TEMP diagnostic: surface the underlying network cause (DNS/TLS/refused/etc)
+    // so we can tell a Supabase-side outage from a config problem on our end.
+    console.error('auth/start createUser failed', {
+      message: createError?.message,
+      name: createError?.name,
+      status: (createError as any)?.status,
+      cause: (createError as any)?.cause ? String((createError as any).cause) : undefined,
+      causeCode: (createError as any)?.cause?.code,
+    })
     return NextResponse.json({ error: createError?.message || 'Could not create account' }, { status: 500 })
   }
 
