@@ -6,7 +6,7 @@ import type { Profile } from '@/lib/types/database.types'
 import { z } from 'zod'
 
 const profileUpdateSchema = z.object({
-  display_name: z.string().trim().min(1).max(100).optional(),
+  display_name: z.string().trim().max(100).nullable().optional(),
   own_phone_number: z.string().trim().max(32).nullable().optional(),
   timezone: z.string().trim().max(64).optional(),
   // Set by the Settings page's "I've built the Shortcut" confirmation. A
@@ -35,7 +35,9 @@ export async function PATCH(request: NextRequest) {
   if (!parsed.success) return jsonError(parsed.error.errors[0]?.message || 'Invalid input')
 
   const update: Partial<Profile> = {}
-  if (parsed.data.display_name !== undefined) update.display_name = parsed.data.display_name
+  if (parsed.data.display_name !== undefined) {
+    update.display_name = parsed.data.display_name === '' ? null : parsed.data.display_name
+  }
   if (parsed.data.timezone !== undefined) update.timezone = parsed.data.timezone
   if (parsed.data.own_phone_number !== undefined) {
     if (parsed.data.own_phone_number === null || parsed.data.own_phone_number === '') {

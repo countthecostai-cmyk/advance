@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import { ShortcutOnboarding } from '@/components/settings/ShortcutOnboarding'
 import { TestModeCard } from '@/components/settings/TestModeCard'
 import { SuppressionListCard } from '@/components/settings/SuppressionListCard'
@@ -15,6 +16,8 @@ export default function SettingsPage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [logs, setLogs] = useState<AuditLog[]>([])
   const [showLogs, setShowLogs] = useState(false)
+  const [name, setName] = useState('')
+  const [savingName, setSavingName] = useState(false)
 
   async function load() {
     const res = await fetch('/api/profile')
@@ -29,6 +32,17 @@ export default function SettingsPage() {
   useEffect(() => {
     load()
   }, [])
+
+  useEffect(() => {
+    if (profile) setName(profile.display_name || '')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.display_name])
+
+  async function saveName() {
+    setSavingName(true)
+    await updateProfile({ display_name: name.trim() || null } as any)
+    setSavingName(false)
+  }
 
   async function updateProfile(fields: Partial<Profile> & { mark_shortcut_configured?: boolean }) {
     const res = await fetch('/api/profile', {
@@ -117,10 +131,16 @@ export default function SettingsPage() {
 
         <Card>
           <p className="mb-3 text-sm font-semibold text-ink-900">Account</p>
-          <p className="mb-3 text-sm text-ink-600">
-            {profile?.display_name || 'No name set'}
-            {profile?.own_phone_number ? ` · ${profile.own_phone_number}` : ''}
-          </p>
+          <p className="mb-2 text-xs text-ink-500">Your name, shown on your home screen greeting.</p>
+          <div className="mb-3 flex gap-2">
+            <Input placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} />
+            <Button size="md" onClick={saveName} loading={savingName}>
+              Save
+            </Button>
+          </div>
+          {profile?.own_phone_number && (
+            <p className="mb-3 text-sm text-ink-600">{profile.own_phone_number}</p>
+          )}
           <Button variant="secondary" fullWidth onClick={signOut}>
             Sign out
           </Button>
