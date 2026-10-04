@@ -12,6 +12,6 @@ export const config = {
      * cookie stays fresh app-wide, while still letting the matcher list above
      * (login/signup/opt-out/shortcut API/manifest/sw) opt out of the redirect.
      */
-    '/((?!_next/static|_next/image|favicon.ico|icons/).*)',
+    '/((?!_next/static|_next/image|favicon.ico|favicon-16.png|favicon-32.png|apple-touch-icon.png|icons/).*)',
   ],
 }
