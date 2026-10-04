@@ -54,18 +54,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: createError?.message || 'Could not create account' }, { status: 500 })
   }
 
-  // The on_auth_user_created trigger already inserted a blank profiles row —
-  // fill in whatever we have right away, bypassing RLS since there's no
-  // session yet at this point.
-  if (parsed.data.display_name || phoneE164) {
-    await admin
-      .from('profiles')
-      .update({
-        ...(parsed.data.display_name ? { display_name: parsed.data.display_name } : {}),
-        ...(phoneE164 ? { own_phone_number: phoneE164 } : {}),
-      })
-      .eq('id', created.user.id)
-  }
+  // The on_auth_user_created trigger already inserted a profiles row, but
+  // its display_name fallback (coalesce to the email's local part) was
+  // written for real human emails — with our throwaway
+  // "<uuid>@users.advance.internal" address it would leave the raw UUID
+  // sitting in display_name. Always overwrite it explicitly here (to null
+  // when no name was given) so that bug can't surface in the UI.
+  await admin
+    .from('profiles')
+    .update({
+      display_name: parsed.data.display_name || null,
+      ...(phoneE164 ? { own_phone_number: phoneE164 } : {}),
+    })
+    .eq('id', created.user.id)
 
   // Now sign in as that brand-new user through the normal (cookie-writing)
   // server client, so the response carries a real, working session.
