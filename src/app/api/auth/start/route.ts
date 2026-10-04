@@ -4,54 +4,37 @@ import { createServerSupabase, createServiceRoleSupabase } from '@/lib/supabase/
 import { validateAndNormalizePhone } from '@/lib/phone'
 import { z } from 'zod'
 
-// POST /api/auth/start — the entire "sign up" flow in one call. There's no
-// email and no password for a person to type, so there's nothing for
+// POST /api/auth/start — the entire "sign up" flow in one call, with nothing
+// to type first. There's no email and no password, so there's nothing for
 // Supabase's public sign-up endpoint to do here. Instead we use the
 // service-role key (already configured on this server for the Shortcut
 // webhooks) to create a real Supabase Auth user behind the scenes with a
 // throwaway, never-shown email+password pair, then sign that pair in
 // ourselves to hand back a normal session cookie.
 //
-// Deliberately NOT gated behind any Supabase Auth dashboard setting (like
-// "Allow anonymous sign-ins") — the admin user-creation API works
-// regardless of which sign-in methods are toggled on, so this keeps working
-// no matter who owns/administers the Supabase project.
+// display_name and phone are both optional — a name/number can be added
+// later from Settings (TestModeCard already has a field for the phone
+// number). Deliberately NOT gated behind any Supabase Auth dashboard
+// setting (like "Allow anonymous sign-ins") — the admin user-creation API
+// works regardless of which sign-in methods are toggled on.
 const bodySchema = z.object({
-  display_name: z.string().trim().min(1).max(100),
-  phone: z.string().trim().min(1).max(32),
+  display_name: z.string().trim().max(100).optional(),
+  phone: z.string().trim().max(32).optional(),
 })
 
 export async function POST(request: NextRequest) {
-  const parsed = bodySchema.safeParse(await request.json().catch(() => null))
+  const parsed = bodySchema.safeParse(await request.json().catch(() => ({})))
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.errors[0]?.message || 'Invalid input' }, { status: 400 })
   }
 
-  const phone = validateAndNormalizePhone(parsed.data.phone)
-  if (!phone.valid || !phone.e164) {
-    return NextResponse.json({ error: phone.reason || 'Invalid phone number' }, { status: 400 })
-  }
-
-  // TEMP diagnostic: bypass supabase-js entirely and hit the admin endpoint
-  // with a raw fetch, so we get the real HTTP status / network error instead
-  // of supabase-js's wrapped (and detail-stripped) AuthRetryableFetchError.
-  try {
-    const raw = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users?page=1&per_page=1`, {
-      headers: {
-        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-      },
-    })
-    const rawText = await raw.text()
-    console.error('auth/start raw admin fetch result', { status: raw.status, body: rawText.slice(0, 500) })
-  } catch (rawErr: any) {
-    console.error('auth/start raw admin fetch threw', {
-      message: rawErr?.message,
-      name: rawErr?.name,
-      cause: rawErr?.cause ? String(rawErr.cause) : undefined,
-      causeCode: rawErr?.cause?.code,
-      stack: rawErr?.stack?.split('\n').slice(0, 4).join(' | '),
-    })
+  let phoneE164: string | null = null
+  if (parsed.data.phone) {
+    const phone = validateAndNormalizePhone(parsed.data.phone)
+    if (!phone.valid || !phone.e164) {
+      return NextResponse.json({ error: phone.reason || 'Invalid phone number' }, { status: 400 })
+    }
+    phoneE164 = phone.e164
   }
 
   const admin = createServiceRoleSupabase()
@@ -64,29 +47,25 @@ export async function POST(request: NextRequest) {
     email: internalEmail,
     password: internalPassword,
     email_confirm: true,
-    user_metadata: { display_name: parsed.data.display_name },
+    user_metadata: parsed.data.display_name ? { display_name: parsed.data.display_name } : undefined,
   })
 
   if (createError || !created.user) {
-    // TEMP diagnostic: surface the underlying network cause (DNS/TLS/refused/etc)
-    // so we can tell a Supabase-side outage from a config problem on our end.
-    console.error('auth/start createUser failed', {
-      message: createError?.message,
-      name: createError?.name,
-      status: (createError as any)?.status,
-      cause: (createError as any)?.cause ? String((createError as any).cause) : undefined,
-      causeCode: (createError as any)?.cause?.code,
-    })
     return NextResponse.json({ error: createError?.message || 'Could not create account' }, { status: 500 })
   }
 
   // The on_auth_user_created trigger already inserted a blank profiles row —
-  // fill in the phone number right away, bypassing RLS since there's no
+  // fill in whatever we have right away, bypassing RLS since there's no
   // session yet at this point.
-  await admin
-    .from('profiles')
-    .update({ display_name: parsed.data.display_name, own_phone_number: phone.e164 })
-    .eq('id', created.user.id)
+  if (parsed.data.display_name || phoneE164) {
+    await admin
+      .from('profiles')
+      .update({
+        ...(parsed.data.display_name ? { display_name: parsed.data.display_name } : {}),
+        ...(phoneE164 ? { own_phone_number: phoneE164 } : {}),
+      })
+      .eq('id', created.user.id)
+  }
 
   // Now sign in as that brand-new user through the normal (cookie-writing)
   // server client, so the response carries a real, working session.
