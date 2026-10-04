@@ -15,6 +15,30 @@ export function ShortcutOnboarding({
   onConfirm: () => Promise<void>
 }) {
   const [confirming, setConfirming] = useState(false)
+  // Once it's installed, the step-by-step instructions just clutter the
+  // screen forever -- collapse to a single line, with a link to bring the
+  // guide back if it's ever needed again (e.g. setting up a second phone).
+  const [showSteps, setShowSteps] = useState(!configured)
+
+  if (configured && !showSteps) {
+    return (
+      <Card>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-ink-900">Apple Shortcut</p>
+            <p className="mt-0.5 text-xs text-ink-500">{SHORTCUT_NAME} is installed and ready to send.</p>
+          </div>
+          <Badge tone="success">Installed</Badge>
+        </div>
+        <button
+          className="mt-2 text-xs font-medium text-brand-600"
+          onClick={() => setShowSteps(true)}
+        >
+          Show setup steps again
+        </button>
+      </Card>
+    )
+  }
 
   return (
     <Card>
