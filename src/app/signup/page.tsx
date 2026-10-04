@@ -1,67 +1,63 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 
+// No email, no password, no texted verification code. Just a name and the
+// phone number Advance will send from (also doubles as the "send me a test"
+// number for Test Mode). We create an anonymous Supabase session under the
+// hood — there's no credential to type back in later, so this trades
+// "sign back in on a new device" for zero friction getting started. That's a
+// deliberate product choice, not an oversight.
 export default function SignupPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
+  const [phone, setPhone] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [checkEmail, setCheckEmail] = useState(false)
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
     const supabase = createClient()
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { display_name: displayName || undefined },
-        emailRedirectTo: `${window.location.origin}/auth/confirm`,
-      },
+
+    const { data, error: signInError } = await supabase.auth.signInAnonymously({
+      options: { data: { display_name: displayName || undefined } },
     })
-    setLoading(false)
-    if (error) {
-      setError(error.message)
+
+    if (signInError || !data.user) {
+      setLoading(false)
+      if (signInError?.message?.toLowerCase().includes('anonymous')) {
+        setError('Sign-up isn’t turned on yet for this app. Ask the app owner to enable it in Supabase.')
+      } else {
+        setError(signInError?.message || 'Something went wrong. Please try again.')
+      }
       return
     }
-    if (data.session) {
-      router.replace('/home')
-      router.refresh()
-    } else {
-      // Email confirmation is enabled on the Supabase project.
-      setCheckEmail(true)
-    }
-  }
 
-  if (checkEmail) {
-    return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-3 overflow-hidden bg-ink-50 px-6 text-center safe-top safe-bottom">
-        <div className="pointer-events-none absolute inset-0 bg-auth-glow" aria-hidden />
-        <div className="relative flex flex-col items-center gap-3 rounded-xl2 border border-ink-100 bg-white p-8 shadow-elevated">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-gradient text-3xl shadow-glow">
-            📬
-          </div>
-          <h1 className="text-xl font-semibold text-ink-900">Check your email</h1>
-          <p className="max-w-xs text-sm text-ink-400">
-            We sent a confirmation link to <span className="font-medium text-ink-700">{email}</span>. Tap it, then
-            come back and sign in.
-          </p>
-          <Link href="/login" className="mt-2 text-sm font-semibold text-brand-600">
-            Back to sign in
-          </Link>
-        </div>
-      </div>
-    )
+    const res = await fetch('/api/profile', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        display_name: displayName || undefined,
+        own_phone_number: phone.trim() || undefined,
+      }),
+    })
+
+    setLoading(false)
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      setError(body.error || 'That phone number doesn’t look right. Use the format +15551234567.')
+      return
+    }
+
+    router.replace('/home')
+    router.refresh()
   }
 
   return (
@@ -73,43 +69,33 @@ export default function SignupPage() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-gradient text-3xl text-white shadow-glow">
             💬
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-ink-900">Create your account</h1>
-          <p className="mt-1.5 text-sm text-ink-400">Your campaigns, contacts, and history are yours alone</p>
+          <h1 className="text-2xl font-bold tracking-tight text-ink-900">Get started</h1>
+          <p className="mt-1.5 text-sm text-ink-400">No email, no password — just you</p>
         </div>
 
         <div className="rounded-xl2 border border-ink-100 bg-white p-6 shadow-elevated">
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <Input label="Name" required value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
             <Input
-              label="Email"
-              type="email"
-              autoComplete="email"
+              label="Your phone number"
+              type="tel"
+              autoComplete="tel"
+              placeholder="+15551234567"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              label="Password"
-              type="password"
-              autoComplete="new-password"
-              minLength={8}
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              hint="At least 8 characters"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              hint="The number you'll be sending from"
             />
             {error && <p className="text-sm font-medium text-red-600">{error}</p>}
             <Button type="submit" fullWidth loading={loading} className="mt-1">
-              Create account
+              Continue
             </Button>
           </form>
         </div>
 
-        <p className="mt-6 text-center text-sm text-ink-400">
-          Already have an account?{' '}
-          <Link href="/login" className="font-semibold text-brand-600">
-            Sign in
-          </Link>
+        <p className="mt-6 text-center text-xs text-ink-400">
+          Using this on a new phone or browser later will start a fresh account — there&apos;s nothing to
+          sign back into.
         </p>
       </div>
     </div>

@@ -13,18 +13,12 @@ import type { Profile, AuditLog } from '@/lib/types/database.types'
 export default function SettingsPage() {
   const router = useRouter()
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [email, setEmail] = useState<string | null>(null)
   const [logs, setLogs] = useState<AuditLog[]>([])
   const [showLogs, setShowLogs] = useState(false)
 
   async function load() {
     const res = await fetch('/api/profile')
     if (res.ok) setProfile((await res.json()).profile)
-    const supabase = createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    setEmail(user?.email ?? null)
   }
 
   async function loadLogs() {
@@ -123,10 +117,16 @@ export default function SettingsPage() {
 
         <Card>
           <p className="mb-3 text-sm font-semibold text-ink-900">Account</p>
-          <p className="mb-3 text-sm text-ink-600">{email}</p>
+          <p className="mb-3 text-sm text-ink-600">
+            {profile?.display_name || 'No name set'}
+            {profile?.own_phone_number ? ` · ${profile.own_phone_number}` : ''}
+          </p>
           <Button variant="secondary" fullWidth onClick={signOut}>
             Sign out
           </Button>
+          <p className="mt-2 text-xs text-ink-400">
+            Signing out clears this account — there&apos;s no email or password to sign back in with.
+          </p>
         </Card>
       </div>
     </div>
