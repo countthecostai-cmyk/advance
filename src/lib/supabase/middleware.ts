@@ -15,6 +15,7 @@ export async function updateSession(request: NextRequest) {
     path.startsWith('/docs') || // Shortcut build guide is meant to be readable pre-login too
     path.startsWith('/api/opt-out') ||
     path.startsWith('/api/shortcut') || // authenticated via signed token, not a session
+    path.startsWith('/api/auth/start') || // creates the session itself — called before one exists
     path === '/manifest.webmanifest' ||
     path === '/sw.js' ||
     path.startsWith('/icons')

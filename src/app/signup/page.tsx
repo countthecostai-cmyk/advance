@@ -2,16 +2,15 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 
 // No email, no password, no texted verification code. Just a name and the
 // phone number Advance will send from (also doubles as the "send me a test"
-// number for Test Mode). We create an anonymous Supabase session under the
-// hood — there's no credential to type back in later, so this trades
-// "sign back in on a new device" for zero friction getting started. That's a
-// deliberate product choice, not an oversight.
+// number for Test Mode). The server creates the account behind the scenes
+// (see /api/auth/start) — there's no credential to type back in later, so
+// this trades "sign back in on a new device" for zero friction getting
+// started. That's a deliberate product choice, not an oversight.
 export default function SignupPage() {
   const router = useRouter()
   const [displayName, setDisplayName] = useState('')
@@ -23,29 +22,11 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const supabase = createClient()
 
-    const { data, error: signInError } = await supabase.auth.signInAnonymously({
-      options: { data: { display_name: displayName || undefined } },
-    })
-
-    if (signInError || !data.user) {
-      setLoading(false)
-      if (signInError?.message?.toLowerCase().includes('anonymous')) {
-        setError('Sign-up isn’t turned on yet for this app. Ask the app owner to enable it in Supabase.')
-      } else {
-        setError(signInError?.message || 'Something went wrong. Please try again.')
-      }
-      return
-    }
-
-    const res = await fetch('/api/profile', {
-      method: 'PATCH',
+    const res = await fetch('/api/auth/start', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        display_name: displayName || undefined,
-        own_phone_number: phone.trim() || undefined,
-      }),
+      body: JSON.stringify({ display_name: displayName, phone }),
     })
 
     setLoading(false)
