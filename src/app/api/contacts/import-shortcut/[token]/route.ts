@@ -19,6 +19,12 @@ const contactSchema = z.object({
 
 const bodySchema = z.object({
   contacts: z.array(contactSchema).min(1, 'No contacts were sent').max(500, 'Too many contacts in one batch (max 500)'),
+  // Optional list/group name to drop these contacts straight into -- lets a
+  // Share Sheet shortcut (or the manual "Add to Advance" one) send people
+  // into a specific Advance list in the same request, with no extra screen.
+  // Matches by name per-user; created automatically if it doesn't exist yet,
+  // same behavior as the CSV importer's "group" column.
+  group: z.string().trim().max(100).optional(),
 })
 
 function splitName(name: string): { first_name: string; last_name: string } {
@@ -48,8 +54,31 @@ export async function POST(request: NextRequest, { params }: { params: { token: 
     .eq('user_id', profile.id)
   const suppressed = new Set((suppressionRows || []).map((s) => s.phone_number))
 
+  // Resolve (or create) the named list up front, same pattern as the CSV importer.
+  let groupId: string | undefined
+  const groupName = parsed.data.group?.trim()
+  if (groupName) {
+    const { data: existingGroup } = await supabase
+      .from('contact_groups')
+      .select('id')
+      .eq('user_id', profile.id)
+      .eq('name', groupName)
+      .maybeSingle()
+    if (existingGroup) {
+      groupId = existingGroup.id
+    } else {
+      const { data: createdGroup } = await supabase
+        .from('contact_groups')
+        .insert({ user_id: profile.id, name: groupName })
+        .select('id')
+        .single()
+      groupId = createdGroup?.id
+    }
+  }
+
   let imported = 0
   let updated = 0
+  const membershipRows: Array<{ contact_id: string; group_id: string; user_id: string }> = []
   const errors: Array<{ input: string; error: string }> = []
 
   for (const raw of parsed.data.contacts) {
@@ -103,13 +132,19 @@ export async function POST(request: NextRequest, { params }: { params: { token: 
 
     if (contact.created_at === contact.updated_at) imported++
     else updated++
+
+    if (groupId) membershipRows.push({ contact_id: contact.id, group_id: groupId, user_id: profile.id })
+  }
+
+  if (membershipRows.length > 0) {
+    await supabase.from('contact_group_members').upsert(membershipRows, { onConflict: 'contact_id,group_id' })
   }
 
   await logAudit(supabase, {
     userId: profile.id,
     actor: 'shortcut',
     action: 'contacts.imported_from_iphone',
-    metadata: { imported, updated, failed: errors.length },
+    metadata: { imported, updated, failed: errors.length, group: groupName || null },
   })
 
   return NextResponse.json({ imported, updated, failed: errors.length, errors: errors.slice(0, 50) })
