@@ -17,26 +17,10 @@ export default async function HomePage() {
     supabase.from('campaigns').select('*').eq('user_id', user!.id).order('created_at', { ascending: false }).limit(3),
   ])
 
-  const needsSetup = !profile?.shortcut_configured_at
-  const needsOwnNumber = !profile?.own_phone_number
-
   return (
     <div className="px-4 pt-4">
       <h1 className="mb-1 text-2xl font-bold text-ink-900">Hi{profile?.display_name ? `, ${profile.display_name}` : ''} 👋</h1>
       <p className="mb-4 text-sm text-ink-400">Messages send from your own iPhone number via Apple Messages.</p>
-
-      {(needsSetup || needsOwnNumber) && (
-        <Card className="mb-4 border-brand-100 bg-brand-50">
-          <p className="mb-2 text-sm font-semibold text-brand-900">Finish setup to start sending</p>
-          <p className="mb-3 text-xs text-brand-800">
-            {needsSetup && 'Install the Advance Sender Shortcut on your iPhone. '}
-            {needsOwnNumber && 'Add your own phone number for test mode.'}
-          </p>
-          <Link href="/settings">
-            <Button size="sm">Finish setup</Button>
-          </Link>
-        </Card>
-      )}
 
       <div className="mb-4 grid grid-cols-2 gap-3">
         <Link href="/contacts">
