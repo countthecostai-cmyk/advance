@@ -13,6 +13,8 @@ export async function updateSession(request: NextRequest) {
     path.startsWith('/auth/confirm') || // email confirmation link lands here, pre-session
     path.startsWith('/opt-out') ||
     path.startsWith('/docs') || // Shortcut build guide is meant to be readable pre-login too
+    path.startsWith('/privacy') || // required to be readable without an account (App Store review, etc.)
+    path.startsWith('/terms') ||
     path.startsWith('/api/opt-out') ||
     path.startsWith('/api/shortcut') || // authenticated via signed token, not a session
     path.startsWith('/api/contacts/import-shortcut') || // authenticated via personal token, not a session
