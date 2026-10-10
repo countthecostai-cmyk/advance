@@ -33,7 +33,7 @@ export default function CampaignsPage() {
   return (
     <div className="px-4 pt-4">
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-ink-900">Campaigns</h1>
+        <h1 className="text-2xl font-bold text-ink-900">Advances</h1>
         <Link href="/campaigns/new" className="tap-target flex h-10 w-10 items-center justify-center rounded-full bg-brand-500 text-xl text-white">
           +
         </Link>
@@ -44,11 +44,11 @@ export default function CampaignsPage() {
       {!loading && campaigns.length === 0 && (
         <EmptyState
           icon="📣"
-          title="No campaigns yet"
-          description="Create your first campaign to start sending through Apple Messages."
+          title="No advances yet"
+          description="Create your first advance to start sending through Apple Messages."
           action={
             <Link href="/campaigns/new">
-              <Button size="sm">New campaign</Button>
+              <Button size="sm">New advance</Button>
             </Link>
           }
         />

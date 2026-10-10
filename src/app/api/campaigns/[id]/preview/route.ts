@@ -16,7 +16,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
     .eq('user_id', user.id)
     .eq('id', params.id)
     .maybeSingle()
-  if (!campaign) return jsonError('Campaign not found', 404)
+  if (!campaign) return jsonError('Advance not found', 404)
 
   const { data: samples } = await supabase
     .from('campaign_recipients')

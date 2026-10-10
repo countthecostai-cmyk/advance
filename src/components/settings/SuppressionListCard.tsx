@@ -43,7 +43,7 @@ export function SuppressionListCard() {
   }
 
   async function remove(id: string) {
-    if (!confirm('Remove this number from your suppression list? They could be messaged again in future campaigns.')) return
+    if (!confirm('Remove this number from your suppression list? They could be messaged again in future advances.')) return
     await fetch(`/api/suppression/${id}`, { method: 'DELETE' })
     load()
   }
@@ -55,7 +55,7 @@ export function SuppressionListCard() {
         <span className="text-xs text-ink-400">{entries.length}</span>
       </div>
       <p className="mb-3 text-xs text-ink-500">
-        Numbers here are excluded from every campaign automatically, even if re-imported. Added when someone taps
+        Numbers here are excluded from every advance automatically, even if re-imported. Added when someone taps
         your opt-out link, or manually here.
       </p>
       <div className="mb-3 flex gap-2">

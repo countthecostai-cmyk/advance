@@ -5,11 +5,11 @@ import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister'
 export const metadata: Metadata = {
   applicationName: 'Advance',
   title: {
-    default: 'Advance — Campaign Sender',
+    default: 'Advance — Mass Text Sender',
     template: '%s · Advance',
   },
   description:
-    'Manage mass-texting campaigns and send them from your own iPhone number through Apple Messages.',
+    'Manage mass-texting advances and send them from your own iPhone number through Apple Messages.',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,

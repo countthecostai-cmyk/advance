@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     .eq('user_id', user.id)
     .eq('id', params.id)
     .maybeSingle()
-  if (!campaign) return jsonError('Campaign not found', 404)
+  if (!campaign) return jsonError('Advance not found', 404)
 
   const { searchParams } = new URL(request.url)
   const limit = Math.min(200, Number(searchParams.get('limit') || 100))

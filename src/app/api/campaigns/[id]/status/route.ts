@@ -17,7 +17,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
     .eq('id', params.id)
     .maybeSingle()
 
-  if (error || !campaign) return jsonError('Campaign not found', 404)
+  if (error || !campaign) return jsonError('Advance not found', 404)
 
   const remaining = Math.max(
     0,

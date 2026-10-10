@@ -130,7 +130,7 @@ export default function ShortcutBuildGuidePage() {
 
       <div className="mt-6 rounded-xl2 border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
         Go back to Advance → Settings → tap <strong>“I’ve built the Shortcut”</strong> → run a{' '}
-        <strong>Test Mode</strong> campaign to yourself before sending anything real.
+        <strong>Test Mode</strong> advance to yourself before sending anything real.
       </div>
     </div>
   )

@@ -87,11 +87,11 @@ export default function SettingsPage() {
               <span className="font-medium text-ink-900">{profile.daily_send_cap} / 24h</span>
             </div>
             <div className="flex justify-between">
-              <span>Max recipients per campaign</span>
+              <span>Max recipients per advance</span>
               <span className="font-medium text-ink-900">{profile.max_recipients_per_campaign}</span>
             </div>
             <div className="flex justify-between">
-              <span>Cooldown between campaigns</span>
+              <span>Cooldown between advances</span>
               <span className="font-medium text-ink-900">{profile.min_seconds_between_campaigns}s</span>
             </div>
           </div>

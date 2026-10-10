@@ -32,14 +32,14 @@ export default async function HomePage() {
         <Link href="/campaigns">
           <Card className="text-center">
             <p className="text-2xl font-bold text-ink-900">{activeCampaigns?.length ?? 0}</p>
-            <p className="text-xs text-ink-400">Active campaigns</p>
+            <p className="text-xs text-ink-400">Active advances</p>
           </Card>
         </Link>
       </div>
 
       <div className="mb-5 flex gap-3">
         <Link href="/campaigns/new" className="flex-1">
-          <Button fullWidth>New campaign</Button>
+          <Button fullWidth>New advance</Button>
         </Link>
         <Link href="/contacts" className="flex-1">
           <Button fullWidth variant="secondary">
@@ -50,7 +50,7 @@ export default async function HomePage() {
 
       {recentCampaigns && recentCampaigns.length > 0 && (
         <div>
-          <p className="mb-2 text-sm font-semibold text-ink-900">Recent campaigns</p>
+          <p className="mb-2 text-sm font-semibold text-ink-900">Recent advances</p>
           <div className="flex flex-col gap-2">
             {recentCampaigns.map((c) => (
               <Link key={c.id} href={`/campaigns/${c.id}`} className="flex items-center justify-between rounded-xl2 border border-ink-100 bg-white p-3">

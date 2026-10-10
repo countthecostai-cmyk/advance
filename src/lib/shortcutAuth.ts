@@ -40,7 +40,7 @@ export async function requireShortcutSession(token: string) {
     // pause/stop takes effect mid-run: the next call the Shortcut makes
     // (fetch or progress) sees a non-active session and tells it to stop.
     return {
-      error: NextResponse.json({ continue: false, reason: `Campaign session is ${session.status}.` }, { status: 200 }),
+      error: NextResponse.json({ continue: false, reason: `Advance session is ${session.status}.` }, { status: 200 }),
       session,
     } as const
   }
@@ -52,7 +52,7 @@ export async function requireShortcutSession(token: string) {
     .maybeSingle()
 
   if (campaignError || !campaign) {
-    return { error: NextResponse.json({ error: 'Campaign not found.' }, { status: 404 }) } as const
+    return { error: NextResponse.json({ error: 'Advance not found.' }, { status: 404 }) } as const
   }
 
   return { supabase, session: session as ShortcutSession, campaign: campaign as Campaign } as const

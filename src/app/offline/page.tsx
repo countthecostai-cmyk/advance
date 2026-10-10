@@ -4,7 +4,7 @@ export default function OfflinePage() {
       <div className="text-4xl">📡</div>
       <h1 className="text-xl font-semibold">You&apos;re offline</h1>
       <p className="max-w-xs text-sm text-ink-300">
-        Advance needs a connection to load your contacts and campaigns. Reconnect and reopen the app.
+        Advance needs a connection to load your contacts and advances. Reconnect and reopen the app.
       </p>
     </main>
   )

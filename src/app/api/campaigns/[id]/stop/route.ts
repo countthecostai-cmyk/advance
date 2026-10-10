@@ -18,9 +18,9 @@ export async function POST(_request: Request, { params }: { params: { id: string
     .eq('user_id', user.id)
     .eq('id', params.id)
     .maybeSingle()
-  if (!campaign) return jsonError('Campaign not found', 404)
+  if (!campaign) return jsonError('Advance not found', 404)
   if (!['ready', 'queued', 'sending', 'paused'].includes(campaign.status)) {
-    return jsonError(`Campaign is "${campaign.status}" — nothing to stop.`, 409)
+    return jsonError(`Advance is "${campaign.status}" — nothing to stop.`, 409)
   }
 
   await revokeActiveShortcutSessions(supabase, params.id)

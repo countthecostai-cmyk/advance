@@ -21,9 +21,9 @@ export async function POST(_request: Request, { params }: { params: { id: string
     .eq('user_id', user.id)
     .eq('id', params.id)
     .maybeSingle()
-  if (!campaign) return jsonError('Campaign not found', 404)
+  if (!campaign) return jsonError('Advance not found', 404)
   if (!['paused', 'queued', 'sending'].includes(campaign.status)) {
-    return jsonError(`Campaign is "${campaign.status}" — nothing left to continue.`, 409)
+    return jsonError(`Advance is "${campaign.status}" — nothing left to continue.`, 409)
   }
 
   const remainingCount = campaign.recipient_count - campaign.processed_count - campaign.error_count - campaign.skipped_count
@@ -38,7 +38,7 @@ export async function POST(_request: Request, { params }: { params: { id: string
     .eq('status', 'active')
     .maybeSingle()
   if (activeSession) {
-    return jsonError('A Shortcut session is already running for this campaign.', 409)
+    return jsonError('A Shortcut session is already running for this advance.', 409)
   }
 
   if (!campaign.is_test_mode) {

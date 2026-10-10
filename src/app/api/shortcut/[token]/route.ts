@@ -16,7 +16,7 @@ export async function GET(_request: Request, { params }: { params: { token: stri
   const { supabase, session, campaign } = auth
 
   if (!['queued', 'sending'].includes(campaign.status)) {
-    return NextResponse.json({ continue: false, reason: `Campaign is ${campaign.status}.`, recipients: [] })
+    return NextResponse.json({ continue: false, reason: `Advance is ${campaign.status}.`, recipients: [] })
   }
 
   const { data: pending, error } = await supabase

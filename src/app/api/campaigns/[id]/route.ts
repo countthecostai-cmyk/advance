@@ -18,7 +18,7 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
     .eq('id', params.id)
     .single()
 
-  if (error || !campaign) return jsonError('Campaign not found', 404)
+  if (error || !campaign) return jsonError('Advance not found', 404)
 
   const { data: recipients } = await supabase
     .from('campaign_recipients')
@@ -42,9 +42,9 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     .eq('user_id', user.id)
     .eq('id', params.id)
     .maybeSingle()
-  if (!campaign) return jsonError('Campaign not found', 404)
+  if (!campaign) return jsonError('Advance not found', 404)
   if (!['ready', 'paused'].includes(campaign.status)) {
-    return jsonError('This campaign can no longer be edited — its send is already in progress or finished.', 409)
+    return jsonError('This advance can no longer be edited — its send is already in progress or finished.', 409)
   }
 
   const body = await request.json().catch(() => null)
@@ -96,9 +96,9 @@ export async function DELETE(_request: NextRequest, { params }: { params: { id: 
     .eq('user_id', user.id)
     .eq('id', params.id)
     .maybeSingle()
-  if (!campaign) return jsonError('Campaign not found', 404)
+  if (!campaign) return jsonError('Advance not found', 404)
   if (['queued', 'sending'].includes(campaign.status)) {
-    return jsonError('Stop this campaign before deleting it.', 409)
+    return jsonError('Stop this advance before deleting it.', 409)
   }
 
   const { error } = await supabase.from('campaigns').delete().eq('user_id', user.id).eq('id', params.id)

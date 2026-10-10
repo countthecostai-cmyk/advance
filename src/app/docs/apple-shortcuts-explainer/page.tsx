@@ -36,7 +36,7 @@ export default function AppleShortcutsExplainerPage() {
         </p>
       </Section>
 
-      <Section title="Why large campaigns take a few taps, not zero">
+      <Section title="Why large advances take a few taps, not zero">
         <p>
           Apple gives no way to run a Shortcut silently and unattended in the background at a time of an app&apos;s
           choosing. Advance sends in batches (20 recipients by default) and shows “Continue in Apple

@@ -187,7 +187,7 @@ export default function ContactsPage() {
               size="sm"
               onClick={() => router.push(`/campaigns/new?contact_ids=${Array.from(selected).join(',')}`)}
             >
-              New campaign →
+              New advance →
             </Button>
           </div>
         </div>

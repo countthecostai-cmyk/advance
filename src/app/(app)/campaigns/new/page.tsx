@@ -77,7 +77,7 @@ export default function NewCampaignPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: name || 'Untitled campaign',
+        name: name || 'Untitled advance',
         message_template: message,
         contact_ids: isTestMode ? [] : Array.from(selected),
         group_ids: [],
@@ -91,7 +91,7 @@ export default function NewCampaignPage() {
     setCreating(false)
     if (!res.ok) {
       const body = await res.json().catch(() => ({}))
-      setError(body.error || 'Could not create campaign')
+      setError(body.error || 'Could not create advance')
       return
     }
     const data = await res.json()
@@ -106,7 +106,7 @@ export default function NewCampaignPage() {
         <button onClick={() => router.back()} className="text-sm font-medium text-brand-600">
           ← Back
         </button>
-        <h1 className="text-base font-semibold text-ink-900">New campaign</h1>
+        <h1 className="text-base font-semibold text-ink-900">New advance</h1>
         <span className="w-10" />
       </div>
 
@@ -173,7 +173,7 @@ export default function NewCampaignPage() {
 
       {step === 1 && (
         <div className="flex flex-col gap-3">
-          <Input label="Campaign name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Saturday event invite" />
+          <Input label="Advance name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Saturday event invite" />
           <Textarea
             label="Message"
             rows={5}
@@ -251,8 +251,8 @@ export default function NewCampaignPage() {
       {step === 3 && (
         <div className="flex flex-col gap-3">
           <Card>
-            <p className="text-sm text-ink-500">Campaign</p>
-            <p className="text-lg font-semibold text-ink-900">{name || 'Untitled campaign'}</p>
+            <p className="text-sm text-ink-500">Advance</p>
+            <p className="text-lg font-semibold text-ink-900">{name || 'Untitled advance'}</p>
           </Card>
           <Card>
             <p className="text-sm text-ink-500">Recipients</p>
@@ -272,7 +272,7 @@ export default function NewCampaignPage() {
           )}
           {error && <p className="text-sm font-medium text-red-600">{error}</p>}
           <Button onClick={createCampaign} loading={creating} fullWidth>
-            Create campaign
+            Create advance
           </Button>
         </div>
       )}

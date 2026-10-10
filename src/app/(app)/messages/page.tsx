@@ -34,12 +34,12 @@ export default function MessagesPage() {
   return (
     <div className="px-4 pt-4">
       <h1 className="mb-1 text-2xl font-bold text-ink-900">Messages</h1>
-      <p className="mb-4 text-sm text-ink-400">Every message Advance has handed to Apple Messages, across all campaigns.</p>
+      <p className="mb-4 text-sm text-ink-400">Every message Advance has handed to Apple Messages, across all advances.</p>
 
       {loading && <p className="py-8 text-center text-sm text-ink-400">Loading…</p>}
 
       {!loading && messages.length === 0 && (
-        <EmptyState icon="💬" title="No messages yet" description="Once you send a campaign, its history shows up here." />
+        <EmptyState icon="💬" title="No messages yet" description="Once you send an advance, its history shows up here." />
       )}
 
       <div className="flex flex-col gap-2">

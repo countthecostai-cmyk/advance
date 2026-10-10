@@ -32,7 +32,7 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
   }, [params.id])
 
   async function optOut() {
-    if (!confirm('Mark this contact as opted out? They will be excluded from every future campaign.')) return
+    if (!confirm('Mark this contact as opted out? They will be excluded from every future advance.')) return
     await fetch(`/api/contacts/${params.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -89,7 +89,7 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
           <p className="text-sm text-red-800">
             Opted out {contact.opted_out_at ? new Date(contact.opted_out_at).toLocaleString() : ''}
             {contact.opted_out_reason ? ` — ${contact.opted_out_reason}` : ''}. This number is also on your
-            suppression list and will be skipped by every campaign, even if re-imported.
+            suppression list and will be skipped by every advance, even if re-imported.
           </p>
         </Card>
       )}

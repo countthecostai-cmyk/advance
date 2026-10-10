@@ -109,7 +109,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
   return (
     <div className="px-4 pt-4 pb-10">
       <button onClick={() => router.push('/campaigns')} className="mb-3 text-sm font-medium text-brand-600">
-        ← Campaigns
+        ← Advances
       </button>
 
       <div className="mb-1 flex items-center justify-between">
@@ -191,15 +191,15 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
             <Button fullWidth loading={busy} onClick={() => action('resume')}>
               Resume in Apple Messages
             </Button>
-            <Button fullWidth variant="danger" loading={busy} onClick={() => action('stop', 'Stop this campaign? Remaining recipients will not be messaged.')}>
-              Stop campaign
+            <Button fullWidth variant="danger" loading={busy} onClick={() => action('stop', 'Stop this advance? Remaining recipients will not be messaged.')}>
+              Stop advance
             </Button>
           </>
         )}
 
         {['ready', 'queued', 'sending'].includes(campaign.status) && campaign.status !== 'paused' && (
-          <Button fullWidth variant="ghost" loading={busy} onClick={() => action('stop', 'Stop this campaign? Remaining recipients will not be messaged.')}>
-            Stop campaign
+          <Button fullWidth variant="ghost" loading={busy} onClick={() => action('stop', 'Stop this advance? Remaining recipients will not be messaged.')}>
+            Stop advance
           </Button>
         )}
       </div>

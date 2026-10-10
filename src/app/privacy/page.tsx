@@ -28,8 +28,8 @@ export default function PrivacyPolicyPage() {
         <ul className="ml-4 list-disc">
           <li>Contact info you add yourself: names and phone numbers of the people you message.</li>
           <li>Your own profile info: a display name, your own phone number (for test sends), and your timezone.</li>
-          <li>Messages, campaigns, groups, and events you create inside Advance.</li>
-          <li>Basic activity logs (for example, when a campaign was sent) so you can see your own history.</li>
+          <li>Messages, advances, groups, and events you create inside Advance.</li>
+          <li>Basic activity logs (for example, when an advance was sent) so you can see your own history.</li>
         </ul>
         <p>
           We do not read, store, or have access to the actual contents of text messages sent from your iPhone —
@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
 
       <Section title="How we use it">
         <p>
-          Solely to run the app for you: showing your contacts and groups, building the list of who a campaign
+          Solely to run the app for you: showing your contacts and groups, building the list of who an advance
           should go to, and remembering your settings. We don&apos;t sell your data, and we don&apos;t use it for
           advertising.
         </p>

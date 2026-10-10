@@ -35,7 +35,7 @@ export function TestModeCard({ ownPhoneNumber, onSaveNumber }: { ownPhoneNumber:
     setSending(false)
     if (!res.ok) {
       const body = await res.json().catch(() => ({}))
-      setError(body.error || 'Could not create test campaign')
+      setError(body.error || 'Could not create test advance')
       return
     }
     const data = await res.json()

@@ -28,7 +28,7 @@ export async function POST(request: NextRequest, { params }: { params: { token: 
     .eq('campaign_id', campaign.id)
     .maybeSingle()
 
-  if (!recipient) return NextResponse.json({ error: 'Recipient not found on this campaign' }, { status: 404 })
+  if (!recipient) return NextResponse.json({ error: 'Recipient not found on this advance' }, { status: 404 })
 
   const status = parsed.data.result === 'handed_to_messages' ? 'handed_to_messages' : 'error'
 

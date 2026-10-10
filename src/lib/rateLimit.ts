@@ -23,7 +23,7 @@ export async function checkCampaignRecipientCap(
   if (recipientCount > cap) {
     return {
       allowed: false,
-      reason: `This campaign has ${recipientCount} recipients, above your ${cap}-recipient campaign limit. Split it into smaller campaigns.`,
+      reason: `This advance has ${recipientCount} recipients, above your ${cap}-recipient advance limit. Split it into smaller advances.`,
     }
   }
   return { allowed: true }
@@ -43,7 +43,7 @@ export async function checkDailySendCap(
   if (sentToday + additionalRecipients > cap) {
     return {
       allowed: false,
-      reason: `You've sent ${sentToday} messages in the last 24 hours (limit ${cap}). This campaign would push you over — wait or reduce recipients.`,
+      reason: `You've sent ${sentToday} messages in the last 24 hours (limit ${cap}). This advance would push you over — wait or reduce recipients.`,
     }
   }
   return { allowed: true }
@@ -69,7 +69,7 @@ export async function checkMinTimeBetweenCampaigns(
     const wait = Math.ceil(profile.min_seconds_between_campaigns - secondsSince)
     return {
       allowed: false,
-      reason: `Please wait ${wait}s before starting another campaign — this cool-down prevents accidental double-sends.`,
+      reason: `Please wait ${wait}s before starting another advance — this cool-down prevents accidental double-sends.`,
     }
   }
   return { allowed: true }

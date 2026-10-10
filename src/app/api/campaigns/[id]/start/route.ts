@@ -19,9 +19,9 @@ export async function POST(_request: Request, { params }: { params: { id: string
     .eq('user_id', user.id)
     .eq('id', params.id)
     .maybeSingle()
-  if (!campaign) return jsonError('Campaign not found', 404)
+  if (!campaign) return jsonError('Advance not found', 404)
   if (campaign.status !== 'ready') {
-    return jsonError(`Campaign is "${campaign.status}" — only a "ready" campaign can be started.`, 409)
+    return jsonError(`Advance is "${campaign.status}" — only a "ready" advance can be started.`, 409)
   }
 
   if (!campaign.is_test_mode) {
