@@ -7,7 +7,7 @@ import clsx from 'clsx'
 const items = [
   { href: '/home', label: 'Home', icon: '🏠' },
   { href: '/contacts', label: 'Contacts', icon: '👥' },
-  { href: '/campaigns', label: 'Campaigns', icon: '📣' },
+  { href: '/campaigns', label: 'Advance', icon: '📣' },
   { href: '/settings', label: 'Settings', icon: '⚙️' },
 ]
 
