@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { ShortcutOnboarding } from '@/components/settings/ShortcutOnboarding'
 import { TestModeCard } from '@/components/settings/TestModeCard'
 import { SuppressionListCard } from '@/components/settings/SuppressionListCard'
 import { createClient } from '@/lib/supabase/client'
@@ -67,11 +66,6 @@ export default function SettingsPage() {
       <h1 className="mb-4 text-2xl font-bold text-ink-900">Settings</h1>
 
       <div className="flex flex-col gap-4">
-        <ShortcutOnboarding
-          configured={!!profile.shortcut_configured_at}
-          onConfirm={() => updateProfile({ mark_shortcut_configured: true })}
-        />
-
         <TestModeCard
           ownPhoneNumber={profile.own_phone_number}
           onSaveNumber={(n) => updateProfile({ own_phone_number: n } as any)}
