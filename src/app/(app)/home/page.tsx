@@ -3,6 +3,7 @@ import { createServerSupabase } from '@/lib/supabase/server'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { AdvanceIcon } from '@/components/ui/Icons'
 
 export default async function HomePage() {
   const supabase = createServerSupabase()
@@ -19,27 +20,33 @@ export default async function HomePage() {
 
   return (
     <div className="px-4 pt-4">
-      <h1 className="mb-1 text-2xl font-bold text-ink-900">Hi{profile?.display_name ? `, ${profile.display_name}` : ''} 👋</h1>
-      <p className="mb-4 text-sm text-ink-400">Messages send from your own iPhone number via Apple Messages.</p>
+      <p className="mono-label text-[10px] text-brand-600">Mission status — active</p>
+      <h1 className="font-display mt-0.5 text-3xl font-bold uppercase tracking-wide text-ink-900">
+        {profile?.display_name || 'Andre'}
+      </h1>
+      <p className="mb-4 mt-1 text-sm text-ink-400">Messages send from your own iPhone number via Apple Messages.</p>
 
       <div className="mb-4 grid grid-cols-2 gap-3">
         <Link href="/contacts">
           <Card className="text-center">
-            <p className="text-2xl font-bold text-ink-900">{contactCount ?? 0}</p>
-            <p className="text-xs text-ink-400">Contacts</p>
+            <p className="readout text-2xl font-bold text-brand-600">{contactCount ?? 0}</p>
+            <p className="mono-label mt-1 text-[9px] text-ink-400">Contacts</p>
           </Card>
         </Link>
         <Link href="/campaigns">
           <Card className="text-center">
-            <p className="text-2xl font-bold text-ink-900">{activeCampaigns?.length ?? 0}</p>
-            <p className="text-xs text-ink-400">Active advances</p>
+            <p className="readout text-2xl font-bold text-brand-600">{activeCampaigns?.length ?? 0}</p>
+            <p className="mono-label mt-1 text-[9px] text-ink-400">Active advances</p>
           </Card>
         </Link>
       </div>
 
       <div className="mb-5 flex gap-3">
         <Link href="/campaigns/new" className="flex-1">
-          <Button fullWidth>New advance</Button>
+          <Button fullWidth className="gap-2">
+            <AdvanceIcon className="h-4 w-4" />
+            New advance
+          </Button>
         </Link>
         <Link href="/contacts" className="flex-1">
           <Button fullWidth variant="secondary">
@@ -50,11 +57,18 @@ export default async function HomePage() {
 
       {recentCampaigns && recentCampaigns.length > 0 && (
         <div>
-          <p className="mb-2 text-sm font-semibold text-ink-900">Recent advances</p>
+          <p className="mono-label mb-2 flex items-center gap-2 text-[9.5px] text-ink-500">
+            Recent advances
+            <span className="h-px flex-1 bg-ink-200" />
+          </p>
           <div className="flex flex-col gap-2">
             {recentCampaigns.map((c) => (
-              <Link key={c.id} href={`/campaigns/${c.id}`} className="flex items-center justify-between rounded-xl2 border border-ink-100 bg-white p-3">
-                <span className="text-sm font-medium text-ink-900">{c.name}</span>
+              <Link
+                key={c.id}
+                href={`/campaigns/${c.id}`}
+                className="cut-corner flex items-center justify-between border border-ink-200 bg-ink-100 p-3"
+              >
+                <span className="text-sm font-semibold text-ink-900">{c.name}</span>
                 <Badge>{c.status}</Badge>
               </Link>
             ))}

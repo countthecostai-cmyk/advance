@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { AdvanceIcon } from '@/components/ui/Icons'
 
 // No form. No name, no phone number, no email, no password — landing here
 // IS signing up. An account is created the instant the page loads and the
@@ -42,24 +43,24 @@ export default function SignupPage() {
       <div className="pointer-events-none absolute inset-0 bg-auth-glow" aria-hidden />
 
       <div className="relative flex flex-col items-center gap-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-gradient text-3xl text-white shadow-glow">
-          💬
+        <div className="cut-corner flex h-16 w-16 items-center justify-center border border-brand-500 bg-black shadow-glow">
+          <AdvanceIcon className="h-7 w-7 text-brand-500" />
         </div>
 
         {error ? (
           <>
-            <p className="max-w-xs text-sm font-medium text-red-600">{error}</p>
+            <p className="max-w-xs text-sm font-medium text-red-400">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="text-sm font-semibold text-brand-600"
+              className="mono-label text-[11px] text-brand-600"
             >
               Try again
             </button>
           </>
         ) : (
           <>
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-ink-200 border-t-brand-600" />
-            <p className="text-sm text-ink-400">Getting you set up…</p>
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-ink-300 border-t-brand-500" />
+            <p className="mono-label text-[11px] text-ink-500">Getting you set up…</p>
           </>
         )}
       </div>

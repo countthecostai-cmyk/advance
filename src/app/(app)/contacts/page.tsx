@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { ContactFormModal } from '@/components/contacts/ContactFormModal'
 import { ImportCsvModal } from '@/components/contacts/ImportCsvModal'
 import { GroupManagerModal } from '@/components/contacts/GroupManagerModal'
+import { PlusIcon, CheckIcon, AdvanceIcon } from '@/components/ui/Icons'
 import type { ContactWithGroups, ContactGroup } from '@/lib/types/database.types'
 import { formatPhoneForDisplay } from '@/lib/phone'
 
@@ -69,16 +70,16 @@ export default function ContactsPage() {
   return (
     <div className="px-4 pt-4">
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-ink-900">Contacts</h1>
+        <h1 className="font-display text-3xl font-bold uppercase tracking-wide text-ink-900">Contacts</h1>
         <button
           onClick={() => {
             setEditing(null)
             setShowForm(true)
           }}
-          className="tap-target flex h-10 w-10 items-center justify-center rounded-full bg-brand-500 text-xl text-white"
+          className="cut-corner tap-target flex h-10 w-10 items-center justify-center border border-brand-500 bg-brand-50 text-brand-600"
           aria-label="Add contact"
         >
-          +
+          <PlusIcon className="h-4 w-4" />
         </button>
       </div>
 
@@ -87,8 +88,8 @@ export default function ContactsPage() {
       <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => setActiveGroup(null)}
-          className={`tap-target shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium ${
-            !activeGroup ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-ink-200 text-ink-500'
+          className={`mono-label tap-target shrink-0 border px-3 py-1.5 text-[10px] ${
+            !activeGroup ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-ink-300 text-ink-500'
           }`}
         >
           All
@@ -97,8 +98,8 @@ export default function ContactsPage() {
           <button
             key={g.id}
             onClick={() => setActiveGroup(g.id)}
-            className={`tap-target shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium ${
-              activeGroup === g.id ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-ink-200 text-ink-500'
+            className={`mono-label tap-target shrink-0 border px-3 py-1.5 text-[10px] ${
+              activeGroup === g.id ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-ink-300 text-ink-500'
             }`}
           >
             {g.name} · {g.member_count ?? 0}
@@ -106,7 +107,7 @@ export default function ContactsPage() {
         ))}
         <button
           onClick={() => setShowGroups(true)}
-          className="tap-target shrink-0 rounded-full border border-dashed border-ink-300 px-3 py-1.5 text-xs font-medium text-ink-500"
+          className="mono-label tap-target shrink-0 border border-dashed border-ink-300 px-3 py-1.5 text-[10px] text-ink-500"
         >
           Manage groups
         </button>
@@ -118,13 +119,13 @@ export default function ContactsPage() {
           {selected.size > 0 && ` · ${selected.size} selected`}
         </span>
         <div className="flex gap-3">
-          <button onClick={selectAll} className="font-medium text-brand-600">
+          <button onClick={selectAll} className="font-semibold text-brand-600">
             Select all ({activeCount})
           </button>
-          <button onClick={() => setShowImport(true)} className="font-medium text-brand-600">
+          <button onClick={() => setShowImport(true)} className="font-semibold text-brand-600">
             Import
           </button>
-          <a href="/api/contacts/export" className="font-medium text-brand-600">
+          <a href="/api/contacts/export" className="font-semibold text-brand-600">
             Export
           </a>
         </div>
@@ -149,18 +150,18 @@ export default function ContactsPage() {
         {contacts.map((c) => (
           <div
             key={c.id}
-            className={`flex items-center gap-3 rounded-xl2 border p-3 ${
-              c.opted_out ? 'border-ink-100 bg-ink-50 opacity-60' : 'border-ink-100 bg-white'
+            className={`cut-corner flex items-center gap-3 border p-3 ${
+              c.opted_out ? 'border-ink-200 bg-ink-50 opacity-60' : 'border-ink-200 bg-ink-100'
             }`}
           >
             <button
               disabled={c.opted_out}
               onClick={() => toggleSelect(c.id)}
-              className={`tap-target flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
+              className={`tap-target flex h-6 w-6 shrink-0 items-center justify-center border-2 ${
                 selected.has(c.id) ? 'border-brand-500 bg-brand-500 text-white' : 'border-ink-300'
               }`}
             >
-              {selected.has(c.id) && '✓'}
+              {selected.has(c.id) && <CheckIcon className="h-3.5 w-3.5" />}
             </button>
             <button className="flex-1 text-left" onClick={() => router.push(`/contacts/${c.id}`)}>
               <p className="font-semibold text-ink-900">
@@ -181,13 +182,15 @@ export default function ContactsPage() {
 
       {selected.size > 0 && (
         <div className="safe-bottom fixed inset-x-0 bottom-20 z-30 px-4">
-          <div className="mx-auto flex max-w-lg items-center justify-between gap-3 rounded-2xl bg-ink-900 p-3 pl-4 text-white shadow-lg">
-            <span className="text-sm font-medium">{selected.size} selected</span>
+          <div className="cut-corner mx-auto flex max-w-lg items-center justify-between gap-3 border border-brand-500 bg-black p-3 pl-4 shadow-glow">
+            <span className="mono-label text-[11px] text-ink-900">{selected.size} selected</span>
             <Button
               size="sm"
+              className="gap-1.5"
               onClick={() => router.push(`/campaigns/new?contact_ids=${Array.from(selected).join(',')}`)}
             >
-              New advance →
+              New advance
+              <AdvanceIcon className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>

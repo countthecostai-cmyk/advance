@@ -15,16 +15,18 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-brand-gradient text-white shadow-glow active:brightness-95 disabled:bg-none disabled:bg-ink-200 disabled:text-ink-400 disabled:shadow-none',
-  secondary: 'bg-white text-ink-900 border border-ink-200 shadow-card active:bg-ink-50 disabled:text-ink-300 disabled:shadow-none',
-  danger: 'bg-red-600 text-white active:bg-red-700 disabled:bg-ink-200 disabled:text-ink-400',
-  ghost: 'bg-transparent text-brand-600 active:bg-brand-50 disabled:text-ink-300',
+    'cut-corner border border-brand-500 bg-brand-50 text-brand-600 shadow-glow active:bg-brand-100 disabled:border-ink-300 disabled:bg-transparent disabled:text-ink-400 disabled:shadow-none',
+  secondary:
+    'cut-corner border border-ink-300 bg-ink-100 text-ink-800 active:bg-ink-200 disabled:text-ink-400',
+  danger:
+    'cut-corner border border-red-500 bg-red-950 text-red-400 active:bg-red-900 disabled:border-ink-300 disabled:bg-transparent disabled:text-ink-400',
+  ghost: 'bg-transparent text-brand-600 active:bg-brand-50 disabled:text-ink-400',
 }
 
 const sizeClasses: Record<Size, string> = {
-  lg: 'h-14 px-6 text-base rounded-2xl',
-  md: 'h-12 px-5 text-sm rounded-xl',
-  sm: 'h-10 px-4 text-sm rounded-lg',
+  lg: 'h-14 px-6 text-[13px]',
+  md: 'h-12 px-5 text-[12.5px]',
+  sm: 'h-10 px-4 text-[12px]',
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -36,7 +38,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       disabled={disabled || loading}
       className={clsx(
-        'inline-flex items-center justify-center gap-2 font-semibold transition active:scale-[0.98]',
+        'inline-flex items-center justify-center gap-2 font-bold uppercase tracking-wider transition active:scale-[0.98]',
         'tap-target select-none',
         variantClasses[variant],
         sizeClasses[size],

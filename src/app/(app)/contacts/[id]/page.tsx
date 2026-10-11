@@ -51,15 +51,15 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
 
   return (
     <div className="px-4 pt-4">
-      <button onClick={() => router.back()} className="mb-3 text-sm font-medium text-brand-600">
+      <button onClick={() => router.back()} className="mono-label mb-3 text-[11px] text-brand-600">
         ← Back
       </button>
 
       <Card>
-        <h1 className="text-xl font-bold text-ink-900">
+        <h1 className="font-display text-2xl font-bold uppercase tracking-wide text-ink-900">
           {contact.first_name} {contact.last_name}
         </h1>
-        <p className="text-ink-500">{formatPhoneForDisplay(contact.phone_number)}</p>
+        <p className="readout text-ink-500">{formatPhoneForDisplay(contact.phone_number)}</p>
         <div className="mt-2 flex flex-wrap gap-1.5">
           {contact.opted_out && <Badge tone="danger">Opted out</Badge>}
           <Badge tone={contact.consent_status === 'given' ? 'success' : 'neutral'}>
@@ -85,8 +85,8 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
       </Card>
 
       {contact.opted_out && (
-        <Card className="mt-3 border-red-100 bg-red-50">
-          <p className="text-sm text-red-800">
+        <Card className="mt-3 border-red-800 bg-red-950">
+          <p className="text-sm text-red-300">
             Opted out {contact.opted_out_at ? new Date(contact.opted_out_at).toLocaleString() : ''}
             {contact.opted_out_reason ? ` — ${contact.opted_out_reason}` : ''}. This number is also on your
             suppression list and will be skipped by every advance, even if re-imported.

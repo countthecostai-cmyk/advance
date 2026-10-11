@@ -10,6 +10,7 @@ import type { ContactWithGroups, ContactGroup } from '@/lib/types/database.types
 import { personalizeMessage } from '@/lib/personalization'
 import { PERSONALIZATION_TOKENS } from '@/lib/constants'
 import { formatPhoneForDisplay } from '@/lib/phone'
+import { CheckIcon } from '@/components/ui/Icons'
 
 const STEPS = ['Recipients', 'Message', 'Options', 'Review'] as const
 
@@ -103,27 +104,27 @@ export default function NewCampaignPage() {
   return (
     <div className="px-4 pt-4">
       <div className="mb-4 flex items-center justify-between">
-        <button onClick={() => router.back()} className="text-sm font-medium text-brand-600">
+        <button onClick={() => router.back()} className="mono-label text-[11px] text-brand-600">
           ← Back
         </button>
-        <h1 className="text-base font-semibold text-ink-900">New advance</h1>
+        <h1 className="mono-label text-[11px] text-ink-700">New advance</h1>
         <span className="w-10" />
       </div>
 
       <div className="mb-5 flex gap-1.5">
         {STEPS.map((s, i) => (
-          <div key={s} className={`h-1.5 flex-1 rounded-full ${i <= step ? 'bg-brand-500' : 'bg-ink-100'}`} />
+          <div key={s} className={`h-[3px] flex-1 ${i <= step ? 'bg-brand-500 shadow-[0_0_6px_rgb(255_46_62_/_0.6)]' : 'bg-ink-200'}`} />
         ))}
       </div>
 
       {step === 0 && (
         <div>
-          <label className="mb-2 flex items-center justify-between rounded-xl border border-ink-100 bg-white p-3">
+          <label className="mb-2 flex items-center justify-between border border-ink-200 bg-ink-100 p-3">
             <span>
               <span className="block text-sm font-semibold text-ink-900">Test mode</span>
               <span className="block text-xs text-ink-400">Send only to your own number first</span>
             </span>
-            <input type="checkbox" className="h-6 w-6" checked={isTestMode} onChange={(e) => setIsTestMode(e.target.checked)} />
+            <input type="checkbox" className="h-6 w-6 accent-brand-500" checked={isTestMode} onChange={(e) => setIsTestMode(e.target.checked)} />
           </label>
 
           {!isTestMode && (
@@ -134,7 +135,7 @@ export default function NewCampaignPage() {
                   <button
                     key={g.id}
                     onClick={() => selectGroup(g.id)}
-                    className="tap-target shrink-0 rounded-full border border-ink-200 px-3 py-1.5 text-xs font-medium text-ink-600"
+                    className="mono-label tap-target shrink-0 border border-ink-300 px-3 py-1.5 text-[10px] text-ink-600"
                   >
                     + {g.name}
                   </button>
@@ -146,16 +147,16 @@ export default function NewCampaignPage() {
                   <button
                     key={c.id}
                     onClick={() => toggle(c.id)}
-                    className={`flex items-center gap-3 rounded-xl border p-3 text-left ${
-                      selected.has(c.id) ? 'border-brand-500 bg-brand-50' : 'border-ink-100 bg-white'
+                    className={`flex items-center gap-3 border p-3 text-left ${
+                      selected.has(c.id) ? 'border-brand-500 bg-brand-50' : 'border-ink-200 bg-ink-100'
                     }`}
                   >
                     <span
-                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center border-2 ${
                         selected.has(c.id) ? 'border-brand-500 bg-brand-500 text-white' : 'border-ink-300'
                       }`}
                     >
-                      {selected.has(c.id) && '✓'}
+                      {selected.has(c.id) && <CheckIcon className="h-3.5 w-3.5" />}
                     </span>
                     <span>
                       <span className="block text-sm font-medium text-ink-900">
@@ -186,7 +187,7 @@ export default function NewCampaignPage() {
               <button
                 key={t}
                 onClick={() => insertToken(t)}
-                className="tap-target rounded-lg bg-ink-100 px-3 py-2 text-xs font-medium text-ink-600"
+                className="tap-target mono-label border border-ink-300 bg-ink-100 px-3 py-2 text-[10px] text-ink-600"
               >
                 {t}
               </button>
@@ -215,12 +216,12 @@ export default function NewCampaignPage() {
             onChange={(e) => setScheduledAt(e.target.value)}
             hint="Leave blank to send as soon as you tap Send. Advance doesn't send in the background — you'll still tap Send with Apple Messages when you're ready."
           />
-          <label className="flex items-center justify-between rounded-xl border border-ink-100 bg-white p-3">
+          <label className="flex items-center justify-between border border-ink-200 bg-ink-100 p-3">
             <span className="text-sm font-medium text-ink-900">Include STOP / opt-out link</span>
-            <input type="checkbox" className="h-6 w-6" checked={includeFooter} onChange={(e) => setIncludeFooter(e.target.checked)} />
+            <input type="checkbox" className="h-6 w-6 accent-brand-500" checked={includeFooter} onChange={(e) => setIncludeFooter(e.target.checked)} />
           </label>
 
-          <button onClick={() => setShowAdvanced((v) => !v)} className="text-left text-sm font-medium text-brand-600">
+          <button onClick={() => setShowAdvanced((v) => !v)} className="mono-label text-left text-[11px] text-brand-600">
             {showAdvanced ? 'Hide' : 'Show'} advanced settings
           </button>
           {showAdvanced && (

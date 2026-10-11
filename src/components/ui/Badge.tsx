@@ -3,16 +3,21 @@ import clsx from 'clsx'
 type Tone = 'neutral' | 'success' | 'warning' | 'danger' | 'info'
 
 const toneClasses: Record<Tone, string> = {
-  neutral: 'bg-ink-100 text-ink-600',
-  success: 'bg-emerald-100 text-emerald-700',
-  warning: 'bg-amber-100 text-amber-700',
-  danger: 'bg-red-100 text-red-700',
-  info: 'bg-brand-100 text-brand-700',
+  neutral: 'border-ink-300 text-ink-500',
+  success: 'border-emerald-700 text-emerald-400',
+  warning: 'border-amber-700 text-amber-400',
+  danger: 'border-red-700 text-red-400',
+  info: 'border-brand-500 text-brand-600',
 }
 
 export function Badge({ tone = 'neutral', children }: { tone?: Tone; children: React.ReactNode }) {
   return (
-    <span className={clsx('inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium', toneClasses[tone])}>
+    <span
+      className={clsx(
+        'mono-label inline-flex items-center border bg-ink-50 px-2 py-0.5 text-[9.5px]',
+        toneClasses[tone]
+      )}
+    >
       {children}
     </span>
   )

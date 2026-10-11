@@ -108,15 +108,15 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
 
   return (
     <div className="px-4 pt-4 pb-10">
-      <button onClick={() => router.push('/campaigns')} className="mb-3 text-sm font-medium text-brand-600">
+      <button onClick={() => router.push('/campaigns')} className="mono-label mb-3 text-[11px] text-brand-600">
         ← Advances
       </button>
 
       <div className="mb-1 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-ink-900">{campaign.name}</h1>
+        <h1 className="font-display text-2xl font-bold uppercase tracking-wide text-ink-900">{campaign.name}</h1>
         <Badge>{campaign.status}</Badge>
       </div>
-      <p className="mb-4 text-sm text-ink-400">
+      <p className="readout mb-4 text-sm text-ink-400">
         {campaign.recipient_count} recipient{campaign.recipient_count === 1 ? '' : 's'}
         {campaign.is_test_mode && ' · test mode'}
       </p>
@@ -150,7 +150,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
           <p className="mb-2 text-sm font-semibold text-ink-900">Preview ({preview.length} of {campaign.recipient_count})</p>
           <div className="flex flex-col gap-2">
             {preview.map((p, i) => (
-              <div key={i} className="rounded-lg bg-ink-50 p-2 text-sm text-ink-700">
+              <div key={i} className="border border-ink-200 bg-ink-50 p-2 text-sm text-ink-700">
                 <p className="mb-0.5 text-xs font-medium text-ink-400">
                   {p.first_name} {p.last_name}
                 </p>
@@ -209,7 +209,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
           <p className="mb-2 text-sm font-semibold text-ink-900">Recipients</p>
           <div className="flex flex-col gap-1.5">
             {recipients.map((r) => (
-              <div key={r.id} className="flex items-center justify-between rounded-lg border border-ink-100 bg-white px-3 py-2">
+              <div key={r.id} className="flex items-center justify-between border border-ink-200 bg-ink-100 px-3 py-2">
                 <span className="text-sm text-ink-800">
                   {r.first_name} {r.last_name}
                 </span>

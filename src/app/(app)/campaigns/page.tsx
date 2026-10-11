@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/Badge'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Button } from '@/components/ui/Button'
 import { ProgressBar } from '@/components/ui/ProgressBar'
+import { PlusIcon } from '@/components/ui/Icons'
 import type { Campaign, CampaignStatus } from '@/lib/types/database.types'
 
 const statusTone: Record<CampaignStatus, 'neutral' | 'success' | 'warning' | 'danger' | 'info'> = {
@@ -33,9 +34,12 @@ export default function CampaignsPage() {
   return (
     <div className="px-4 pt-4">
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-ink-900">Advances</h1>
-        <Link href="/campaigns/new" className="tap-target flex h-10 w-10 items-center justify-center rounded-full bg-brand-500 text-xl text-white">
-          +
+        <h1 className="font-display text-3xl font-bold uppercase tracking-wide text-ink-900">Advances</h1>
+        <Link
+          href="/campaigns/new"
+          className="cut-corner tap-target flex h-10 w-10 items-center justify-center border border-brand-500 bg-brand-50 text-brand-600"
+        >
+          <PlusIcon className="h-4 w-4" />
         </Link>
       </div>
 
@@ -56,12 +60,16 @@ export default function CampaignsPage() {
 
       <div className="flex flex-col gap-3">
         {campaigns.map((c) => (
-          <Link key={c.id} href={`/campaigns/${c.id}`} className="block rounded-xl2 border border-ink-100 bg-white p-4">
+          <Link
+            key={c.id}
+            href={`/campaigns/${c.id}`}
+            className="cut-corner block border border-ink-200 bg-ink-100 p-4"
+          >
             <div className="mb-1 flex items-center justify-between">
               <p className="font-semibold text-ink-900">{c.name}</p>
               <Badge tone={statusTone[c.status]}>{c.status}</Badge>
             </div>
-            <p className="mb-2 text-xs text-ink-400">
+            <p className="readout mb-2 text-xs text-ink-400">
               {c.recipient_count} recipient{c.recipient_count === 1 ? '' : 's'} · {new Date(c.created_at).toLocaleDateString()}
             </p>
             {['queued', 'sending', 'paused', 'completed'].includes(c.status) && (

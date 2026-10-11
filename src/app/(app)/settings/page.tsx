@@ -63,7 +63,7 @@ export default function SettingsPage() {
 
   return (
     <div className="px-4 pt-4 pb-10">
-      <h1 className="mb-4 text-2xl font-bold text-ink-900">Settings</h1>
+      <h1 className="font-display mb-4 text-3xl font-bold uppercase tracking-wide text-ink-900">Settings</h1>
 
       <div className="flex flex-col gap-4">
         <TestModeCard
@@ -74,19 +74,19 @@ export default function SettingsPage() {
         <SuppressionListCard />
 
         <Card>
-          <p className="mb-3 text-sm font-semibold text-ink-900">Sending limits</p>
+          <p className="mono-label mb-3 text-[10.5px] text-ink-500">Sending limits</p>
           <div className="flex flex-col gap-2 text-sm text-ink-600">
             <div className="flex justify-between">
               <span>Daily send cap</span>
-              <span className="font-medium text-ink-900">{profile.daily_send_cap} / 24h</span>
+              <span className="readout font-medium text-brand-600">{profile.daily_send_cap} / 24h</span>
             </div>
             <div className="flex justify-between">
               <span>Max recipients per advance</span>
-              <span className="font-medium text-ink-900">{profile.max_recipients_per_campaign}</span>
+              <span className="readout font-medium text-brand-600">{profile.max_recipients_per_campaign}</span>
             </div>
             <div className="flex justify-between">
               <span>Cooldown between advances</span>
-              <span className="font-medium text-ink-900">{profile.min_seconds_between_campaigns}s</span>
+              <span className="readout font-medium text-brand-600">{profile.min_seconds_between_campaigns}s</span>
             </div>
           </div>
           <p className="mt-3 text-xs text-ink-400">

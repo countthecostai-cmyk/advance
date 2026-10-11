@@ -2,6 +2,7 @@
 
 import { ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { CloseIcon } from '@/components/ui/Icons'
 
 export function Modal({
   open,
@@ -24,19 +25,19 @@ export function Modal({
   if (!open || typeof document === 'undefined') return null
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 sm:items-center" onClick={onClose}>
       <div
-        className="safe-bottom max-h-[85vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 sm:max-w-md sm:rounded-2xl"
+        className="safe-bottom max-h-[85vh] w-full overflow-y-auto border-t border-ink-300 bg-ink-100 p-5 sm:max-w-md sm:border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-ink-900">{title}</h2>
+        <div className="mb-4 flex items-center justify-between border-b border-ink-200 pb-3">
+          <h2 className="font-display text-xl font-bold uppercase tracking-wide text-ink-900">{title}</h2>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="tap-target flex h-9 w-9 items-center justify-center rounded-full text-ink-400 active:bg-ink-100"
+            className="tap-target flex h-9 w-9 items-center justify-center text-ink-500 active:bg-ink-200"
           >
-            ✕
+            <CloseIcon className="h-4 w-4" />
           </button>
         </div>
         {children}

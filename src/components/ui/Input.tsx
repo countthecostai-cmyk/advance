@@ -17,7 +17,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-ink-700">
+        <label htmlFor={inputId} className="mono-label text-[10.5px] text-ink-500">
           {label}
         </label>
       )}
@@ -25,15 +25,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         ref={ref}
         id={inputId}
         className={clsx(
-          'tap-target h-12 w-full rounded-xl border border-ink-200 bg-white px-4 text-ink-900',
-          'placeholder:text-ink-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100',
-          error && 'border-red-400 focus:border-red-500 focus:ring-red-100',
+          'tap-target h-12 w-full border border-ink-300 bg-ink-100 px-4 text-ink-900',
+          'placeholder:text-ink-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-50',
+          error && 'border-red-500 focus:border-red-500 focus:ring-red-950',
           className
         )}
         {...props}
       />
       {hint && !error && <p className="text-xs text-ink-400">{hint}</p>}
-      {error && <p className="text-xs font-medium text-red-600">{error}</p>}
+      {error && <p className="text-xs font-medium text-red-400">{error}</p>}
     </div>
   )
 })
@@ -52,7 +52,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-ink-700">
+        <label htmlFor={inputId} className="mono-label text-[10.5px] text-ink-500">
           {label}
         </label>
       )}
@@ -60,15 +60,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         ref={ref}
         id={inputId}
         className={clsx(
-          'w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-ink-900',
-          'placeholder:text-ink-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100',
-          error && 'border-red-400 focus:border-red-500 focus:ring-red-100',
+          'w-full border border-ink-300 bg-ink-100 px-4 py-3 text-ink-900',
+          'placeholder:text-ink-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-50',
+          error && 'border-red-500 focus:border-red-500 focus:ring-red-950',
           className
         )}
         {...props}
       />
       {hint && !error && <p className="text-xs text-ink-400">{hint}</p>}
-      {error && <p className="text-xs font-medium text-red-600">{error}</p>}
+      {error && <p className="text-xs font-medium text-red-400">{error}</p>}
     </div>
   )
 })
