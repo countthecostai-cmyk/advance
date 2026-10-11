@@ -53,7 +53,7 @@ export function NewGroupForm({ terminology: t }: { terminology: Terminology }) {
           id="group_type"
           value={groupType}
           onChange={(e) => setGroupType(e.target.value)}
-          className="tap-target h-12 w-full rounded-xl border border-ink-200 bg-white px-4 text-ink-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+          className="tap-target h-12 w-full rounded-xl border border-ink-200 bg-ink-100 px-4 text-ink-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
         >
           {t.groupTypes.map((gt) => (
             <option key={gt.value} value={gt.value}>

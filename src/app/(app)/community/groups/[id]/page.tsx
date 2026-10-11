@@ -69,7 +69,7 @@ export default async function CommunityGroupDetailPage({ params }: { params: { i
 
       <p className="mb-2 text-sm font-semibold text-ink-900">Upcoming {t.eventNounPlural.toLowerCase()}</p>
       {!upcoming?.length ? (
-        <p className="mb-4 rounded-xl2 border border-dashed border-ink-200 bg-white p-4 text-sm text-ink-400">
+        <p className="mb-4 rounded-xl2 border border-dashed border-ink-200 bg-ink-100 p-4 text-sm text-ink-400">
           No upcoming {t.eventNounPlural.toLowerCase()}.
         </p>
       ) : (
@@ -82,7 +82,7 @@ export default async function CommunityGroupDetailPage({ params }: { params: { i
               <Link
                 key={e.id}
                 href={`/community/events/${e.id}`}
-                className="flex items-center justify-between rounded-xl2 border border-ink-100 bg-white p-3"
+                className="flex items-center justify-between rounded-xl2 border border-ink-100 bg-ink-100 p-3"
               >
                 <div>
                   <p className="text-sm font-medium text-ink-900">{e.title}</p>
@@ -127,7 +127,7 @@ export default async function CommunityGroupDetailPage({ params }: { params: { i
           <p className="mb-2 text-sm font-semibold text-ink-900">Past {t.eventNounPlural.toLowerCase()}</p>
           <div className="flex flex-col gap-2 pb-4">
             {past.map((e) => (
-              <Link key={e.id} href={`/community/events/${e.id}`} className="rounded-xl2 border border-ink-100 bg-white p-3 text-sm text-ink-700">
+              <Link key={e.id} href={`/community/events/${e.id}`} className="rounded-xl2 border border-ink-100 bg-ink-100 p-3 text-sm text-ink-700">
                 {e.title} · {new Date(e.starts_at).toLocaleDateString()}
               </Link>
             ))}

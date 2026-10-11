@@ -44,7 +44,7 @@ export default function MessagesPage() {
 
       <div className="flex flex-col gap-2">
         {messages.map((m) => (
-          <div key={m.id} className="rounded-xl2 border border-ink-100 bg-white p-3">
+          <div key={m.id} className="rounded-xl2 border border-ink-100 bg-ink-100 p-3">
             <div className="mb-1 flex items-center justify-between">
               <span className="text-sm font-semibold text-ink-900">{formatPhoneForDisplay(m.phone_number)}</span>
               <Badge tone={statusTone[m.status]}>{statusLabel[m.status]}</Badge>

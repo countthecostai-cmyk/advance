@@ -49,7 +49,7 @@ export default async function CommunityGroupsPage() {
       ) : (
         <div className="flex flex-col gap-2">
           {groups.map((g) => (
-            <Link key={g.id} href={`/community/groups/${g.id}`} className="rounded-xl2 border border-ink-100 bg-white p-4">
+            <Link key={g.id} href={`/community/groups/${g.id}`} className="rounded-xl2 border border-ink-100 bg-ink-100 p-4">
               <p className="font-semibold text-ink-900">{g.name}</p>
               {g.description && <p className="mt-1 line-clamp-2 text-sm text-ink-400">{g.description}</p>}
               <div className="mt-2 flex items-center gap-3 text-xs text-ink-400">

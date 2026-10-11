@@ -41,7 +41,7 @@ export default function ShortcutBuildGuidePage() {
         <Step n={1} title="Text">
           Add a <Action>Text</Action> action. Set its content to:
           <br />
-          <code className="mt-1 block rounded bg-ink-900 p-2 text-xs text-white">
+          <code className="mt-1 block rounded bg-black p-2 text-xs text-white">
             {appUrl}/api/shortcut/
           </code>
           Then tap right after it and insert the <strong>Shortcut Input</strong> variable (tap the little variable

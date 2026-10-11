@@ -34,7 +34,7 @@ export function RsvpButtons({ eventId, currentStatus }: { eventId: string; curre
           onClick={() => setStatus(opt.value)}
           className={clsx(
             'tap-target flex-1 rounded-xl border px-3 text-sm font-semibold transition disabled:opacity-50',
-            currentStatus === opt.value ? 'border-brand-500 bg-brand-500 text-white' : 'border-ink-200 bg-white text-ink-900'
+            currentStatus === opt.value ? 'border-brand-500 bg-brand-500 text-white' : 'border-ink-200 bg-ink-100 text-ink-900'
           )}
         >
           {opt.label}

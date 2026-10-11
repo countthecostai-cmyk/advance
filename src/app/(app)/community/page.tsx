@@ -81,7 +81,7 @@ export default async function CommunityPage() {
             <Link
               key={event.id}
               href={`/community/events/${event.id}`}
-              className="flex items-center justify-between rounded-xl2 border border-ink-100 bg-white p-3"
+              className="flex items-center justify-between rounded-xl2 border border-ink-100 bg-ink-100 p-3"
             >
               <div>
                 <p className="text-sm font-medium text-ink-900">{event.title}</p>

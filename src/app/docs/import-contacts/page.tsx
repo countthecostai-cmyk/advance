@@ -88,7 +88,7 @@ export default function ImportContactsBuildGuidePage() {
         <Step n={9} title="Get Contents of URL">
           Add <Action>Get Contents of URL</Action>. URL = paste your personal import link from Settings (looks
           like{' '}
-          <code className="mt-1 block rounded bg-ink-900 p-2 text-xs text-white">
+          <code className="mt-1 block rounded bg-black p-2 text-xs text-white">
             https://your-advance-deployment.com/api/contacts/import-shortcut/…
           </code>
           ). Method: <strong>POST</strong>. Request Body: <strong>JSON</strong>, set to the dictionary from step 8.
