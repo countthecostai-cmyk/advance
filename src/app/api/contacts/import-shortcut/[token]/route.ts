@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireContactsImportToken } from '@/lib/contactsImportAuth'
-import { validateAndNormalizePhone } from '@/lib/phone'
+import { importContactsForUser } from '@/lib/contactsImport'
 import { logAudit } from '@/lib/audit'
 import { z } from 'zod'
 
@@ -27,11 +27,6 @@ const bodySchema = z.object({
   group: z.string().trim().max(100).optional(),
 })
 
-function splitName(name: string): { first_name: string; last_name: string } {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  return { first_name: parts[0] || '', last_name: parts.slice(1).join(' ') }
-}
-
 // POST /api/contacts/import-shortcut/:token — called by the "Add to
 // Advance" Shortcut right after the person picks one or more contacts from
 // their iPhone's Contacts app. Authenticated purely by the personal token
@@ -48,103 +43,13 @@ export async function POST(request: NextRequest, { params }: { params: { token: 
     return NextResponse.json({ error: parsed.error.errors[0]?.message || 'Invalid input' }, { status: 400 })
   }
 
-  const { data: suppressionRows } = await supabase
-    .from('suppression_list')
-    .select('phone_number')
-    .eq('user_id', profile.id)
-  const suppressed = new Set((suppressionRows || []).map((s) => s.phone_number))
-
-  // Resolve (or create) the named list up front, same pattern as the CSV importer.
-  let groupId: string | undefined
-  const groupName = parsed.data.group?.trim()
-  if (groupName) {
-    const { data: existingGroup } = await supabase
-      .from('contact_groups')
-      .select('id')
-      .eq('user_id', profile.id)
-      .eq('name', groupName)
-      .maybeSingle()
-    if (existingGroup) {
-      groupId = existingGroup.id
-    } else {
-      const { data: createdGroup } = await supabase
-        .from('contact_groups')
-        .insert({ user_id: profile.id, name: groupName })
-        .select('id')
-        .single()
-      groupId = createdGroup?.id
-    }
-  }
-
-  let imported = 0
-  let updated = 0
-  const membershipRows: Array<{ contact_id: string; group_id: string; user_id: string }> = []
-  const errors: Array<{ input: string; error: string }> = []
-
-  for (const raw of parsed.data.contacts) {
-    const rawName = raw.name || [raw.first_name, raw.last_name].filter(Boolean).join(' ')
-    const { first_name, last_name } =
-      raw.first_name || raw.last_name
-        ? { first_name: raw.first_name || '', last_name: raw.last_name || '' }
-        : splitName(rawName)
-
-    const label = rawName || raw.phone || raw.phone_number || '(unnamed contact)'
-
-    if (!first_name) {
-      errors.push({ input: label, error: 'Missing a name' })
-      continue
-    }
-
-    const phoneRaw = raw.phone || raw.phone_number
-    if (!phoneRaw) {
-      errors.push({ input: label, error: 'This contact has no phone number' })
-      continue
-    }
-
-    const phone = validateAndNormalizePhone(phoneRaw)
-    if (!phone.valid || !phone.e164) {
-      errors.push({ input: label, error: phone.reason || 'Invalid phone number' })
-      continue
-    }
-
-    const isSuppressed = suppressed.has(phone.e164)
-    const { data: contact, error } = await supabase
-      .from('contacts')
-      .upsert(
-        {
-          user_id: profile.id,
-          first_name,
-          last_name,
-          phone_number: phone.e164,
-          opted_out: isSuppressed,
-          opted_out_at: isSuppressed ? new Date().toISOString() : null,
-          opted_out_reason: isSuppressed ? 'Phone number is on your suppression list' : null,
-        },
-        { onConflict: 'user_id,phone_number' }
-      )
-      .select('id, created_at, updated_at')
-      .single()
-
-    if (error || !contact) {
-      errors.push({ input: label, error: error?.message || 'Could not save this contact' })
-      continue
-    }
-
-    if (contact.created_at === contact.updated_at) imported++
-    else updated++
-
-    if (groupId) membershipRows.push({ contact_id: contact.id, group_id: groupId, user_id: profile.id })
-  }
-
-  if (membershipRows.length > 0) {
-    await supabase.from('contact_group_members').upsert(membershipRows, { onConflict: 'contact_id,group_id' })
-  }
+  const { imported, updated, errors } = await importContactsForUser(supabase, profile.id, parsed.data.contacts, parsed.data.group)
 
   await logAudit(supabase, {
     userId: profile.id,
     actor: 'shortcut',
     action: 'contacts.imported_from_iphone',
-    metadata: { imported, updated, failed: errors.length, group: groupName || null },
+    metadata: { imported, updated, failed: errors.length, group: parsed.data.group || null },
   })
 
   return NextResponse.json({ imported, updated, failed: errors.length, errors: errors.slice(0, 50) })

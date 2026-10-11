@@ -6,13 +6,16 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ContactsImportCard } from '@/components/settings/ContactsImportCard'
+import { NativeContactsImportCard } from '@/components/contacts/NativeContactsImportCard'
 import { TestModeCard } from '@/components/settings/TestModeCard'
 import { SuppressionListCard } from '@/components/settings/SuppressionListCard'
 import { createClient } from '@/lib/supabase/client'
+import { useIsNativeApp } from '@/lib/useIsNativeApp'
 import type { Profile, AuditLog } from '@/lib/types/database.types'
 
 export default function SettingsPage() {
   const router = useRouter()
+  const isNative = useIsNativeApp()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [logs, setLogs] = useState<AuditLog[]>([])
   const [showLogs, setShowLogs] = useState(false)
@@ -72,10 +75,18 @@ export default function SettingsPage() {
           onSaveNumber={(n) => updateProfile({ own_phone_number: n } as any)}
         />
 
-        <ContactsImportCard
-          configured={!!profile.contacts_import_configured_at}
-          onConfirm={() => updateProfile({ mark_contacts_import_configured: true } as any)}
-        />
+        {/* Inside the real iPhone app this renders a one-tap native Contacts
+            connect; it renders nothing in a regular browser tab, where the
+            Shortcut card below is the only way in (Apple doesn't allow a
+            website to read Contacts at all). */}
+        <NativeContactsImportCard configured={!!profile.contacts_import_configured_at} />
+
+        {!isNative && (
+          <ContactsImportCard
+            configured={!!profile.contacts_import_configured_at}
+            onConfirm={() => updateProfile({ mark_contacts_import_configured: true } as any)}
+          />
+        )}
 
         <SuppressionListCard />
 
