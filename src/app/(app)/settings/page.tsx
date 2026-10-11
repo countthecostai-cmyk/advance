@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { ContactsImportCard } from '@/components/settings/ContactsImportCard'
 import { TestModeCard } from '@/components/settings/TestModeCard'
 import { SuppressionListCard } from '@/components/settings/SuppressionListCard'
 import { createClient } from '@/lib/supabase/client'
@@ -69,6 +70,11 @@ export default function SettingsPage() {
         <TestModeCard
           ownPhoneNumber={profile.own_phone_number}
           onSaveNumber={(n) => updateProfile({ own_phone_number: n } as any)}
+        />
+
+        <ContactsImportCard
+          configured={!!profile.contacts_import_configured_at}
+          onConfirm={() => updateProfile({ mark_contacts_import_configured: true } as any)}
         />
 
         <SuppressionListCard />
