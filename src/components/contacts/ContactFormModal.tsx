@@ -98,24 +98,6 @@ export function ContactFormModal({
           onChange={(e) => setValues({ ...values, notes: e.target.value })}
         />
 
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink-700">Consent</label>
-          <div className="flex gap-2">
-            {(['unknown', 'given', 'implied', 'declined'] as const).map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setValues({ ...values, consent_status: s })}
-                className={`tap-target flex-1 rounded-lg border px-2 py-2 text-xs font-medium capitalize ${
-                  values.consent_status === s ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-ink-200 text-ink-500'
-                }`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {groups.length > 0 && (
           <div>
             <label className="mb-1.5 block text-sm font-medium text-ink-700">Groups</label>
