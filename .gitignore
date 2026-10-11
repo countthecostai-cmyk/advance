@@ -11,3 +11,8 @@ out
 # "prebuild") from a tiny from-scratch PNG encoder — not committed directly.
 public/icons/*.png
 public/apple-touch-icon.png
+
+# This project has never committed a lockfile (Vercel resolves deps fresh
+# from package.json on every deploy); don't let a locally-generated one
+# show up as an untracked file.
+package-lock.json
