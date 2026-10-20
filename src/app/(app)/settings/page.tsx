@@ -21,6 +21,9 @@ export default function SettingsPage() {
   const [showLogs, setShowLogs] = useState(false)
   const [name, setName] = useState('')
   const [savingName, setSavingName] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   async function load() {
     const res = await fetch('/api/profile')
@@ -60,6 +63,22 @@ export default function SettingsPage() {
     const supabase = createClient()
     await supabase.auth.signOut()
     router.replace('/login')
+    router.refresh()
+  }
+
+  async function deleteAccount() {
+    setDeleting(true)
+    setDeleteError(null)
+    const res = await fetch('/api/account', { method: 'DELETE' })
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      setDeleteError(body.error || 'Something went wrong. Please try again.')
+      setDeleting(false)
+      return
+    }
+    const supabase = createClient()
+    await supabase.auth.signOut().catch(() => undefined)
+    router.replace('/signup')
     router.refresh()
   }
 
@@ -158,6 +177,30 @@ export default function SettingsPage() {
           <p className="mt-2 text-xs text-ink-400">
             Signing out clears this account — there&apos;s no email or password to sign back in with.
           </p>
+        </Card>
+
+        <Card>
+          <p className="mb-2 text-sm font-semibold text-ink-900">Delete account</p>
+          <p className="mb-3 text-xs text-ink-500">
+            Permanently deletes your account and everything in it — contacts, groups, events, advances, and message
+            history. This can&apos;t be undone.
+          </p>
+          {!confirmingDelete ? (
+            <Button variant="secondary" fullWidth onClick={() => setConfirmingDelete(true)}>
+              Delete my account
+            </Button>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium text-brand-600">Are you sure? This permanently erases all your data.</p>
+              <Button fullWidth onClick={deleteAccount} loading={deleting}>
+                Yes, delete everything
+              </Button>
+              <Button variant="secondary" fullWidth onClick={() => setConfirmingDelete(false)} disabled={deleting}>
+                Cancel
+              </Button>
+            </div>
+          )}
+          {deleteError && <p className="mt-2 text-xs text-brand-600">{deleteError}</p>}
         </Card>
       </div>
     </div>
