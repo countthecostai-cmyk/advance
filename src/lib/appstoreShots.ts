@@ -76,12 +76,12 @@ function icon(name: string, size: number, color: string): any {
   return h(
     'svg',
     { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: color, strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-    ...ICONS[name].map((d: string) => h('path', { d }))
+    ...(ICONS[name] ?? []).map((d: string) => h('path', { d }))
   )
 }
 
 function bottomNav(active: string): any {
-  const items = [
+  const items: Array<[string, string]> = [
     ['HOME', 'home'],
     ['CONTACTS', 'contacts'],
     ['ADVANCE', 'advance'],
@@ -99,7 +99,7 @@ function bottomNav(active: string): any {
       justifyContent: 'space-around',
       paddingTop: px(14),
     },
-    ...items.map(([label, key]: string[]) =>
+    ...items.map(([label, key]) =>
       box(
         { flexDirection: 'column', alignItems: 'center', width: px(90) },
         box({ marginBottom: px(6) }, icon(key, px(20), key === active ? C.red : C.muted)),
