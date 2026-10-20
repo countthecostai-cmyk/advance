@@ -14,6 +14,7 @@ export async function updateSession(request: NextRequest) {
     path.startsWith('/opt-out') ||
     path.startsWith('/docs') || // Shortcut build guide is meant to be readable pre-login too
     path.startsWith('/privacy') || // required to be readable without an account (App Store review, etc.)
+    path.startsWith('/support') || // App Store listing's Support URL — must be readable without an account
     path.startsWith('/terms') ||
     path.startsWith('/api/opt-out') ||
     path.startsWith('/api/shortcut') || // authenticated via signed token, not a session
