@@ -126,9 +126,9 @@ function phone(active: string, ...content: any[]): any {
     {
       position: 'absolute',
       left: 100,
-      top: 760,
+      top: 800,
       width: 1120,
-      height: 2120,
+      height: 2080,
       borderRadius: 110,
       border: '14px solid #1f2024',
       background: C.bg,
@@ -144,18 +144,18 @@ function phone(active: string, ...content: any[]): any {
 
 function caption(kicker: string, title: string, sub: string): any {
   return box(
-    { position: 'absolute', left: 110, right: 110, top: 150, flexDirection: 'column' },
+    { position: 'absolute', left: 110, right: 110, top: 130, flexDirection: 'column' },
     mono(kicker, { fontSize: 40, letterSpacing: 6, color: C.red, marginBottom: 24 }),
     text(title, {
       fontFamily: 'Display',
       fontWeight: 700,
       fontSize: 168,
-      lineHeight: 0.92,
+      lineHeight: '156px',
       color: C.text,
       textTransform: 'uppercase',
       marginBottom: 34,
     }),
-    text(sub, { fontFamily: 'Sans', fontWeight: 400, fontSize: 50, lineHeight: 1.35, color: '#a9acb2' })
+    text(sub, { fontFamily: 'Sans', fontWeight: 400, fontSize: 50, lineHeight: '66px', color: '#a9acb2' })
   )
 }
 
