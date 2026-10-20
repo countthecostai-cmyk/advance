@@ -66,11 +66,12 @@ export default function PrivacyPolicyPage() {
           <li>Anyone you text can reply STOP to opt out, which Advance keeps track of automatically.</li>
           <li>You can sign out at any time, which ends your session on that device.</li>
           <li>
-            To delete your account and all associated data, email{' '}
+            You can delete your account and all associated data at any time from Settings → &quot;Delete my
+            account&quot; inside the app. You can also email{' '}
             <a className="font-semibold text-brand-600" href="mailto:countthecostai@gmail.com">
               countthecostai@gmail.com
             </a>{' '}
-            and we&apos;ll remove it.
+            for help.
           </li>
         </ul>
       </Section>

@@ -42,11 +42,12 @@ export default function SupportPage() {
 
       <Section title="Deleting your account">
         <p>
-          Email{' '}
+          In the app, go to Settings and tap &quot;Delete my account.&quot; This permanently erases your account and
+          everything in it right away. If you have any trouble, email{' '}
           <a className="font-semibold text-brand-600" href="mailto:countthecostai@gmail.com">
             countthecostai@gmail.com
-          </a>{' '}
-          from the address on your account and we&apos;ll delete your account and all associated data.
+          </a>
+          .
         </p>
       </Section>
 
