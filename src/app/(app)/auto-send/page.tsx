@@ -52,9 +52,8 @@ export default function AutoSendPage() {
   }
 
   const checked = ago(last)
-  const addUrl = origin
-    ? `shortcuts://import-shortcut?url=${encodeURIComponent(origin + '/api/shortcut-file/advance-check.shortcut')}&name=${encodeURIComponent('Advance Check')}`
-    : ''
+  // Apple's import link only accepts iCloud links, so use one when set; otherwise download the signed file directly.
+  const addUrl = process.env.NEXT_PUBLIC_CHECK_ICLOUD_LINK || (origin ? origin + '/api/shortcut-file/advance-check.shortcut' : '')
   // Runs the shortcut once with this person's private link as input; the shortcut saves it on the phone.
   const connectUrl = url ? `shortcuts://run-shortcut?name=${encodeURIComponent('Advance Check')}&input=text&text=${encodeURIComponent(url)}` : ''
 
@@ -83,7 +82,7 @@ export default function AutoSendPage() {
         <p className="mb-3 text-xs text-ink-400">Open this page in Safari on your iPhone.</p>
         <ol className="list-decimal space-y-4 pl-5 text-sm text-ink-600">
           <li>
-            Tap <b>Add the shortcut</b>, then <b>Add Shortcut</b>.
+            Tap <b>Add the shortcut</b>. If Safari asks, tap <b>Download</b>, then open the download and tap <b>Add Shortcut</b>.
             <div className="mt-2">
               {addUrl ? (
                 <a href={addUrl} className={btn}>
