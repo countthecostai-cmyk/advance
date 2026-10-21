@@ -4,6 +4,8 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { AdvanceIcon } from '@/components/ui/Icons'
+import { Notifications } from '@/components/home/Notifications'
+import { untyped } from '@/lib/untyped'
 
 export default async function HomePage() {
   const supabase = createServerSupabase()
@@ -18,6 +20,14 @@ export default async function HomePage() {
     supabase.from('campaigns').select('*').eq('user_id', user!.id).order('created_at', { ascending: false }).limit(3),
   ])
 
+  const { data: reminders } = await untyped(supabase)
+    .from('notifications')
+    .select('id, title, body, link')
+    .eq('user_id', user!.id)
+    .is('read_at', null)
+    .order('created_at', { ascending: false })
+    .limit(20)
+
   return (
     <div className="px-4 pt-4">
       <p className="mono-label text-[10px] text-brand-600">Mission status — active</p>
@@ -25,6 +35,8 @@ export default async function HomePage() {
         {profile?.display_name || 'Andre'}
       </h1>
       <p className="mb-4 mt-1 text-sm text-ink-400">Messages send from your own iPhone number via Apple Messages.</p>
+
+      <Notifications items={reminders ?? []} />
 
       <div className="mb-4 grid grid-cols-2 gap-3">
         <Link href="/contacts">
