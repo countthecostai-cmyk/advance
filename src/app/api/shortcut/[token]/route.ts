@@ -11,6 +11,10 @@ import { logAudit } from '@/lib/audit'
 // 'claimed' so a second concurrent fetch (e.g. the user double-tapping
 // Send) can't hand out the same recipient twice.
 export async function GET(_request: Request, { params }: { params: { token: string } }) {
+  // The scheduled-send automation passes the token "idle" when nothing is due.
+  if (params.token === 'idle') {
+    return NextResponse.json({ continue: false, done: true, recipients: [], message: 'Nothing scheduled right now.' })
+  }
   const auth = await requireShortcutSession(params.token)
   if ('error' in auth) return auth.error
   const { supabase, session, campaign } = auth
