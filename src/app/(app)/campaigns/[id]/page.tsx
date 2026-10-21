@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import Link from 'next/link'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import type { Campaign, CampaignRecipient } from '@/lib/types/database.types'
 
@@ -114,7 +115,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
 
       <div className="mb-1 flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold uppercase tracking-wide text-ink-900">{campaign.name}</h1>
-        <Badge>{campaign.status}</Badge>
+        <Badge>{campaign.status === 'ready' && campaign.scheduled_at ? 'scheduled' : campaign.status}</Badge>
       </div>
       <p className="readout mb-4 text-sm text-ink-400">
         {campaign.recipient_count} recipient{campaign.recipient_count === 1 ? '' : 's'}
@@ -134,6 +135,20 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
             {campaign.error_count > 0 && <span>{campaign.error_count} failed</span>}
             {campaign.skipped_count > 0 && <span>{campaign.skipped_count} skipped</span>}
           </div>
+        </Card>
+      )}
+
+      {campaign.status === 'ready' && campaign.scheduled_at && (
+        <Card className="mb-3">
+          <p className="text-sm font-semibold text-ink-900">
+            Scheduled for {new Date(campaign.scheduled_at).toLocaleString()}
+          </p>
+          <p className="mt-1 text-sm text-ink-600">
+            Your iPhone sends it automatically at its first check after that time. You don&apos;t need to tap anything.{' '}
+            <Link href="/auto-send" className="text-brand-600 underline">
+              Set up or check automatic sending
+            </Link>
+          </p>
         </Card>
       )}
 
@@ -170,7 +185,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
             loading={busy}
             onClick={() => action('start', `Send ${campaign.recipient_count} message${campaign.recipient_count === 1 ? '' : 's'} through Apple Messages?`)}
           >
-            Send with Apple Messages
+            {campaign.scheduled_at ? 'Send now instead' : 'Send with Apple Messages'}
           </Button>
         )}
 
