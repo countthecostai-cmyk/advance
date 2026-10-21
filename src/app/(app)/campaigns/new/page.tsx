@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
@@ -210,12 +211,17 @@ export default function NewCampaignPage() {
       {step === 2 && (
         <div className="flex flex-col gap-3">
           <Input
-            label="Schedule (optional)"
+            label="Send later (optional)"
             type="datetime-local"
             value={scheduledAt}
             onChange={(e) => setScheduledAt(e.target.value)}
-            hint="Leave blank to send as soon as you tap Send. Advance doesn't send in the background — you'll still tap Send with Apple Messages when you're ready."
+            hint="Leave blank to send when you tap Send. Pick a date and time and your iPhone sends it automatically at its next check after that time."
           />
+          {scheduledAt && (
+            <Link href="/auto-send" className="text-sm text-brand-600 underline">
+              First time? Set up automatic sending (2 minutes)
+            </Link>
+          )}
           <label className="flex items-center justify-between border border-ink-200 bg-ink-100 p-3">
             <span className="text-sm font-medium text-ink-900">Include STOP / opt-out link</span>
             <input type="checkbox" className="h-6 w-6 accent-brand-500" checked={includeFooter} onChange={(e) => setIncludeFooter(e.target.checked)} />
