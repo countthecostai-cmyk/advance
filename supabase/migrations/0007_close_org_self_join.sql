@@ -1,0 +1,11 @@
+-- Security fix: the "org_members_self_join" policy let any signed-in user
+-- insert a row into organization_members for ANY organization with ANY role
+-- (including 'admin'), as long as user_id was their own. That meant anyone
+-- who learned an organization's id could make themselves its admin and read
+-- its groups, members, events, and RSVPs.
+--
+-- The app no longer needs it: creating an organization (and its first admin
+-- membership) now happens server-side with the service-role key in
+-- POST /api/community/organizations. Adding other people to an organization
+-- is still covered by "org_members_admin_manage" (admins only).
+drop policy if exists "org_members_self_join" on organization_members;
