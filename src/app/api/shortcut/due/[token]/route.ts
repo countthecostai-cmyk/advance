@@ -9,17 +9,24 @@ import type { Profile } from '@/lib/types/database.types'
 // GET /api/shortcut/due/:token — called by the iPhone's timed automation.
 // If one of this person's scheduled advances is due, it is started and a normal
 // one-run Shortcut session token comes back ({ due: true, token }), which the
-// automation hands to the regular "Advance Sender" Shortcut. Nothing due:
-// { due: false }. Always HTTP 200 so the automation never shows an error.
+// automation hands to the regular "Advance Sender" Shortcut. Always HTTP 200 so
+// the automation never shows an error.
+// When nothing is due the answer still carries token "idle", which the sender
+// Shortcut treats as "nothing to send" (see /api/shortcut/idle), so the phone
+// automation never has to branch and never shows an error.
+function idle(reason?: string) {
+  return { due: false, token: 'idle', ...(reason ? { reason } : {}) }
+}
+
 export async function GET(_request: Request, { params }: { params: { token: string } }) {
   const parsed = verifyScheduleToken(params.token)
-  if (!parsed) return NextResponse.json({ due: false, reason: 'invalid link' })
+  if (!parsed) return NextResponse.json(idle('invalid link'))
 
   const admin = createServiceRoleSupabase()
   const { data: profile } = await admin.from('profiles').select('*').eq('id', parsed.userId).maybeSingle()
   const p = profile as (Profile & { schedule_nonce?: string | null }) | null
   if (!p || !p.schedule_nonce || p.schedule_nonce !== parsed.nonce) {
-    return NextResponse.json({ due: false, reason: 'link was reset' })
+    return NextResponse.json(idle('link was reset'))
   }
 
   await admin.from('profiles').update({ schedule_last_checked_at: new Date().toISOString() } as never).eq('id', p.id)
@@ -34,11 +41,11 @@ export async function GET(_request: Request, { params }: { params: { token: stri
     .order('scheduled_at', { ascending: true })
     .limit(1)
   const campaign = due?.[0]
-  if (!campaign) return NextResponse.json({ due: false })
+  if (!campaign) return NextResponse.json(idle())
 
   if (!campaign.is_test_mode) {
     const cap = await checkDailySendCap(admin, p, campaign.recipient_count)
-    if (!cap.allowed) return NextResponse.json({ due: false, reason: cap.reason })
+    if (!cap.allowed) return NextResponse.json(idle(cap.reason))
   }
 
   // Claim it first (ready -> queued) so two overlapping checks can't both start it.
@@ -48,7 +55,7 @@ export async function GET(_request: Request, { params }: { params: { token: stri
     .eq('id', campaign.id)
     .eq('status', 'ready')
     .select('id')
-  if (!claimed || claimed.length === 0) return NextResponse.json({ due: false })
+  if (!claimed || claimed.length === 0) return NextResponse.json(idle())
 
   const session = await issueShortcutSession(admin, p.id, campaign.id)
   await logAudit(admin, {
