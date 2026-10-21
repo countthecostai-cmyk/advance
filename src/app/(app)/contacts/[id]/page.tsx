@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { CatchMeUp } from '@/components/contacts/CatchMeUp'
 import { ContactFormModal } from '@/components/contacts/ContactFormModal'
 import { formatPhoneForDisplay } from '@/lib/phone'
 import type { ContactWithGroups, ConsentEvent, ContactGroup } from '@/lib/types/database.types'
@@ -83,6 +84,8 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
           </Button>
         </div>
       </Card>
+
+      <CatchMeUp contactId={contact.id} firstName={contact.first_name} />
 
       {contact.opted_out && (
         <Card className="mt-3 border-red-800 bg-red-950">
