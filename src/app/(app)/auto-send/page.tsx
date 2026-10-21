@@ -20,6 +20,7 @@ export default function AutoSendPage() {
   const [url, setUrl] = useState('')
   const [last, setLast] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [origin, setOrigin] = useState('')
 
   async function load(reset = false) {
     const res = await fetch('/api/schedule-link', {
@@ -34,6 +35,7 @@ export default function AutoSendPage() {
     }
   }
   useEffect(() => {
+    setOrigin(window.location.origin)
     load()
   }, [])
 
@@ -48,6 +50,9 @@ export default function AutoSendPage() {
   }
 
   const checked = ago(last)
+  const addUrl = origin
+    ? `shortcuts://import-shortcut?url=${encodeURIComponent(origin + '/api/shortcut-file')}&name=${encodeURIComponent('Advance Check')}`
+    : ''
 
   return (
     <div className="px-4 pt-4 pb-6">
@@ -71,29 +76,29 @@ export default function AutoSendPage() {
 
       <Card className="mb-3">
         <p className="mb-2 text-sm font-semibold text-ink-900">Set up on your iPhone (about 2 minutes)</p>
-        <ol className="list-decimal space-y-2 pl-5 text-sm text-ink-600">
-          <li>Tap “Copy your link” below.</li>
+        <ol className="list-decimal space-y-3 pl-5 text-sm text-ink-600">
           <li>
-            Open the <b>Shortcuts</b> app → tap <b>+</b> and name the new shortcut <b>Advance Check</b>.
+            Tap <b>Copy your link</b> below.
           </li>
           <li>
-            Add <b>Get Contents of URL</b> and paste your link.
+            Tap <b>Add the shortcut</b>, then <b>Add Shortcut</b>. When it asks, paste your link.
+            <div className="mt-2">
+              {addUrl ? (
+                <a href={addUrl} className="inline-block rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white">
+                  Add the shortcut
+                </a>
+              ) : null}
+            </div>
           </li>
           <li>
-            Add <b>Get Dictionary Value</b> → Value for <b>token</b>.
-          </li>
-          <li>
-            Add <b>If</b> → <b>has any value</b>. Inside it add <b>Run Shortcut</b> → choose <b>{SHORTCUT_NAME}</b> and set
-            its input to the Dictionary Value.
-          </li>
-          <li>
-            Go to the <b>Automation</b> tab → <b>+</b> → <b>Time of Day</b>. Pick a time (for example 9:00 AM), set it to{' '}
-            <b>Daily</b>, then choose <b>Run Immediately</b>. Make the action <b>Run Shortcut → Advance Check</b>.
+            Open <b>Shortcuts</b> → <b>Automation</b> → <b>+</b> → <b>Time of Day</b>. Pick a time (for example 9:00 AM), choose{' '}
+            <b>Daily</b> and <b>Run Immediately</b>, then pick the shortcut <b>Advance Check</b>.
           </li>
           <li>Add more Time of Day automations for other check times (for example 6:00 PM).</li>
         </ol>
         <p className="mt-3 text-xs text-ink-400">
-          A scheduled text goes out at the first check after its time. Your phone needs to be on and have service.
+          You also need your <b>{SHORTCUT_NAME}</b> shortcut installed (the one that sends the texts). A scheduled text goes
+          out at the first check after its time. Your phone needs to be on and have service.
         </p>
       </Card>
 
