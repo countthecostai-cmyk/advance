@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { getTerminology } from '@/lib/terminology'
 import { JoinButton } from './JoinButton'
+import { InviteCard } from './InviteCard'
 
 export default async function CommunityGroupDetailPage({ params }: { params: { id: string } }) {
   const supabase = createServerSupabase()
@@ -66,6 +67,8 @@ export default async function CommunityGroupDetailPage({ params }: { params: { i
           )}
         </div>
       </div>
+
+      {isLeader && <InviteCard groupId={params.id} groupName={group.name} />}
 
       <p className="mb-2 text-sm font-semibold text-ink-900">Upcoming {t.eventNounPlural.toLowerCase()}</p>
       {!upcoming?.length ? (

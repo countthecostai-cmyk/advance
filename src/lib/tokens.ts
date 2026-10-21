@@ -128,6 +128,38 @@ export function hashContactsImportToken(token: string): string {
   return createHash('sha256').update(token).digest('hex')
 }
 
+// -----------------------------------------------------------------------
+// Group invite links
+//
+// A leader shares /join/<token>; anyone who opens it can join that
+// organization (and group) as a regular member. Stateless and long-lived so
+// a link pasted in a group chat keeps working. Signed with the shortcut
+// secret but under an "invite:" prefix, so an invite signature can never be
+// replayed as any other kind of token (and vice versa).
+// -----------------------------------------------------------------------
+
+export interface InviteTokenPayload {
+  o: string // organization id
+  g?: string // group id (optional: org-wide invite when absent)
+}
+
+export function createInviteToken(payload: InviteTokenPayload): string {
+  const secret = requireEnv('SHORTCUT_TOKEN_SECRET')
+  const encoded = base64urlJson(payload)
+  return `${encoded}.${sign(`invite:${encoded}`, secret)}`
+}
+
+export function verifyInviteToken(token: string): InviteTokenPayload | null {
+  const secret = requireEnv('SHORTCUT_TOKEN_SECRET')
+  const parts = token.split('.')
+  const [encoded, signature] = parts
+  if (parts.length !== 2 || !encoded || !signature) return null
+  if (!safeEqual(signature, sign(`invite:${encoded}`, secret))) return null
+  const payload = parseBase64urlJson<InviteTokenPayload>(encoded)
+  if (!payload || typeof payload.o !== 'string') return null
+  return payload
+}
+
 function requireEnv(name: string): string {
   const value = process.env[name]
   if (!value) throw new Error(`${name} is not configured on the server`)

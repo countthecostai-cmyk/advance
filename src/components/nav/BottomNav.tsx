@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
-import { HomeIcon, ContactsIcon, AdvanceIcon, SettingsIcon } from '@/components/ui/Icons'
+import { HomeIcon, ContactsIcon, AdvanceIcon, GroupsIcon, SettingsIcon } from '@/components/ui/Icons'
 
 const items = [
   { href: '/home', label: 'Home', Icon: HomeIcon },
   { href: '/contacts', label: 'Contacts', Icon: ContactsIcon },
   { href: '/campaigns', label: 'Advance', Icon: AdvanceIcon },
+  { href: '/community', label: 'Groups', Icon: GroupsIcon },
   { href: '/settings', label: 'Settings', Icon: SettingsIcon },
 ]
 
