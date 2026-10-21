@@ -1,5 +1,5 @@
 -- Security hardening from the Supabase Security Advisor (2026-10-21).
--- NOT YET APPLIED to the live database (waiting on owner's OK).
+-- Applied to production 2026-10-21 (after owner approval).
 --
 -- 1. write_audit_log / daily_send_count / recompute_campaign_progress are
 --    SECURITY DEFINER and callable by any signed-in user through the API.
