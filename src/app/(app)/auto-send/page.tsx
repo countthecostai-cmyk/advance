@@ -51,7 +51,7 @@ export default function AutoSendPage() {
 
   const checked = ago(last)
   const addUrl = origin
-    ? `shortcuts://import-shortcut?url=${encodeURIComponent(origin + '/api/shortcut-file')}&name=${encodeURIComponent('Advance Check')}`
+    ? `shortcuts://import-shortcut?url=${encodeURIComponent(origin + '/api/shortcut-file/advance-check.shortcut')}&name=${encodeURIComponent('Advance Check')}`
     : ''
 
   return (
