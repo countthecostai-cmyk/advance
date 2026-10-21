@@ -32,6 +32,21 @@ export async function GET(request: NextRequest) {
     .gt('starts_at', iso(now))
     .lt('starts_at', iso(hours(72)))
   for (const ev of upcoming ?? []) {
+    // Make sure every current group member has an RSVP row (people who joined
+    // after the event was made, or events made before RSVPs were seeded).
+    if (ev.group_id) {
+      const [{ data: members }, { data: have }] = await Promise.all([
+        admin.from('group_members').select('user_id').eq('group_id', ev.group_id),
+        admin.from('rsvps').select('user_id').eq('event_id', ev.id),
+      ])
+      const haveSet = new Set((have ?? []).map((h) => h.user_id))
+      const missing = (members ?? []).filter((m) => !haveSet.has(m.user_id))
+      if (missing.length) {
+        await admin
+          .from('rsvps')
+          .insert(missing.map((m) => ({ event_id: ev.id, user_id: m.user_id, status: 'no_response' as const })))
+      }
+    }
     const { data: rsvps } = await admin
       .from('rsvps')
       .select('id, user_id, status, reminder_count, last_reminded_at')

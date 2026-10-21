@@ -3,6 +3,7 @@ import { jsonError } from '@/lib/apiAuth'
 import { requireOrgContext } from '@/lib/community/requireOrg'
 import { createEventSchema } from '@/lib/community/validation'
 import { logAudit } from '@/lib/audit'
+import { createServiceRoleSupabase } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   const auth = await requireOrgContext()
@@ -35,7 +36,10 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   // immediately see who hasn't answered.
   const { data: members } = await supabase.from('group_members').select('user_id').eq('group_id', params.id)
   if (members?.length) {
-    await supabase
+    // Written with the server key: row-level security only lets people create
+    // their own RSVP row, so a leader's own session can't seed everyone else's.
+    // (The event insert above already proved this person may lead this group.)
+    await createServiceRoleSupabase()
       .from('rsvps')
       .insert(members.map((m) => ({ event_id: event.id, user_id: m.user_id, status: 'no_response' as const })))
   }
