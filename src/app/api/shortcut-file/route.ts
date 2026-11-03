@@ -12,8 +12,10 @@ export const revalidate = 0
 export async function GET() {
   const { data } = await untyped(createServiceRoleSupabase())
     .from('hosted_files')
-    .select('data_b64')
+    .select('data_b64, updated_at')
     .eq('name', 'advance-check')
+    .order('updated_at', { ascending: false })
+    .limit(1)
     .maybeSingle()
   if (!data?.data_b64) return new NextResponse('Not found', { status: 404 })
   const bytes = Buffer.from(data.data_b64 as string, 'base64')
@@ -22,6 +24,7 @@ export async function GET() {
       'Content-Type': 'application/vnd.apple.shortcut',
       'Content-Disposition': 'attachment; filename="Advance Check.shortcut"',
       'Cache-Control': 'no-store',
+      'x-file-updated-at': String(data.updated_at || ''),
     },
   })
 }

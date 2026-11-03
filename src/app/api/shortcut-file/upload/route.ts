@@ -22,9 +22,10 @@ export async function POST(request: NextRequest) {
   if (bytes.length < 100 || bytes.length > 2_000_000 || bytes.subarray(0, 4).toString('latin1') !== 'AEA1') {
     return NextResponse.json({ error: 'That is not a signed shortcut file' }, { status: 400 })
   }
-  const { error } = await untyped(createServiceRoleSupabase())
-    .from('hosted_files')
-    .upsert({ name: 'advance-check', data_b64: b64, updated_at: new Date().toISOString() })
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  const db = untyped(createServiceRoleSupabase())
+  const del = await db.from('hosted_files').delete().eq('name', 'advance-check')
+  if (del.error) return NextResponse.json({ error: del.error.message }, { status: 500 })
+  const ins = await db.from('hosted_files').insert({ name: 'advance-check', data_b64: b64, updated_at: new Date().toISOString() })
+  if (ins.error) return NextResponse.json({ error: ins.error.message }, { status: 500 })
   return NextResponse.json({ ok: true, bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex') })
 }
