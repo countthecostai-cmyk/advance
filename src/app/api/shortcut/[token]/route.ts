@@ -10,10 +10,28 @@ import { logAudit } from '@/lib/audit'
 // Every recipient returned here is atomically flipped from 'pending' to
 // 'claimed' so a second concurrent fetch (e.g. the user double-tapping
 // Send) can't hand out the same recipient twice.
-export async function GET(_request: Request, { params }: { params: { token: string } }) {
+
+// Harmless endpoint the sender can call when nothing is due.
+export async function POST(_request: Request, { params }: { params: { token: string } }) {
+  if (params.token === 'idle') return NextResponse.json({ ok: true })
+  return NextResponse.json({ error: 'Not found' }, { status: 404 })
+}
+
+export async function GET(request: Request, { params }: { params: { token: string } }) {
   // The scheduled-send automation passes the token "idle" when nothing is due.
+  // The sender still calls progress/complete URLs at the end, so give it
+  // harmless ones (otherwise it stops with "No URL Specified").
   if (params.token === 'idle') {
-    return NextResponse.json({ continue: false, done: true, recipients: [], message: 'Nothing scheduled right now.' })
+    const origin = new URL(request.url).origin
+    const idleUrl = `${origin}/api/shortcut/idle`
+    return NextResponse.json({
+      continue: false,
+      done: true,
+      recipients: [],
+      message: 'Nothing scheduled right now.',
+      progress_url: idleUrl,
+      complete_url: idleUrl,
+    })
   }
   const auth = await requireShortcutSession(params.token)
   if ('error' in auth) return auth.error
