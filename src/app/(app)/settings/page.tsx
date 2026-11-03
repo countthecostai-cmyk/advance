@@ -107,6 +107,16 @@ export default function SettingsPage() {
           />
         )}
 
+        <Card>
+          <p className="mb-1 text-sm font-semibold text-ink-900">Automatic sending</p>
+          <p className="mb-3 text-xs text-ink-500">
+            Schedule a text for later and your iPhone sends it by itself. Set it up once.
+          </p>
+          <Button variant="secondary" fullWidth onClick={() => router.push('/auto-send')}>
+            Set up automatic sending
+          </Button>
+        </Card>
+
         <SuppressionListCard />
 
         <Card>
