@@ -6,6 +6,8 @@ import { untyped } from '@/lib/untyped'
 // anyone can install it with one tap. It holds no personal data: each person's
 // link is passed in when they set it up and stored on their own phone.
 export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+export const revalidate = 0
 
 export async function GET() {
   const { data } = await untyped(createServiceRoleSupabase())
@@ -19,7 +21,7 @@ export async function GET() {
     headers: {
       'Content-Type': 'application/vnd.apple.shortcut',
       'Content-Disposition': 'attachment; filename="Advance Check.shortcut"',
-      'Cache-Control': 'public, max-age=300',
+      'Cache-Control': 'no-store',
     },
   })
 }
