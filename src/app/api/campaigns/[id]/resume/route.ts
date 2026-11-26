@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server'
 import { requireUser, jsonError } from '@/lib/apiAuth'
 import { checkDailySendCap } from '@/lib/rateLimit'
-import { issueShortcutSession } from '@/lib/shortcutSession'
+import { issueShortcutSession, revokeActiveShortcutSessions } from '@/lib/shortcutSession'
 import { logAudit } from '@/lib/audit'
+
+// A live Shortcut run reports progress after every message.
+const STALE_SESSION_MS = 2 * 60 * 1000
 
 // POST /api/campaigns/[id]/resume — issues a fresh Shortcut session covering
 // only the recipients still pending, and returns a new shortcuts:// launch
@@ -31,15 +34,34 @@ export async function POST(_request: Request, { params }: { params: { id: string
     return jsonError('Every recipient has already reached a final status.', 409)
   }
 
-  const { data: activeSession } = await supabase
+  // A run that is genuinely still going checks in on every message, so only
+  // block when the active session was used in the last couple of minutes. A
+  // session left "active" because the Shortcut was cancelled or crashed (it
+  // never called /complete) used to lock this advance for the full 6-hour
+  // token lifetime.
+  const { data: activeSessions } = await supabase
     .from('shortcut_sessions')
-    .select('id')
+    .select('id, last_used_at, created_at')
     .eq('campaign_id', campaign.id)
     .eq('status', 'active')
-    .maybeSingle()
-  if (activeSession) {
-    return jsonError('A Shortcut session is already running for this advance.', 409)
+  const recentlyUsed = (activeSessions ?? []).some((s) => {
+    const last = new Date(s.last_used_at || s.created_at).getTime()
+    return Date.now() - last < STALE_SESSION_MS
+  })
+  if (recentlyUsed) {
+    return jsonError('A Shortcut run is still sending for this advance. Wait a moment and try again.', 409)
   }
+
+  // Recipients handed to a run that died before reporting back would
+  // otherwise sit in 'claimed' forever: never re-sent, and the advance never
+  // reaches 'completed'. The old session is revoked first (issueShortcutSession
+  // below), so put them back in the queue for this run.
+  await revokeActiveShortcutSessions(supabase, campaign.id)
+  await supabase
+    .from('campaign_recipients')
+    .update({ status: 'pending', claimed_at: null })
+    .eq('campaign_id', campaign.id)
+    .eq('status', 'claimed')
 
   if (!campaign.is_test_mode) {
     const dailyCap = await checkDailySendCap(supabase, profile, remainingCount)

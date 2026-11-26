@@ -1,5 +1,6 @@
 import { randomUUID, randomBytes } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { createServerSupabase, createServiceRoleSupabase } from '@/lib/supabase/server'
 import { validateAndNormalizePhone } from '@/lib/phone'
 import { z } from 'zod'
@@ -35,6 +36,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: phone.reason || 'Invalid phone number' }, { status: 400 })
     }
     phoneE164 = phone.e164
+  }
+
+  // Never replace an account that's already signed in on this device. Every
+  // signed-out path in the app (/, /login, the middleware's auth fallback)
+  // ends up on /signup, so without this check anyone who reached it while
+  // still holding a valid session — an old bookmark to /login, a slow auth
+  // check, the confirm-link error redirect — was silently signed into a
+  // brand-new empty account, and since there's no password or email to sign
+  // back in with, their contacts and advances were gone for good.
+  const current = createServerSupabase()
+  const hasSessionCookie = cookies()
+    .getAll()
+    .some((c) => c.name.startsWith('sb-') && c.name.includes('-auth-token'))
+  if (hasSessionCookie) {
+    const { data, error } = await current.auth.getUser()
+    if (data?.user) return NextResponse.json({ ok: true, existing: true })
+    // The session cookie is there but Supabase couldn't be reached (network
+    // error, timeout, or a 5xx). Don't guess: making a new account here would
+    // strand the person's real one. Ask them to retry instead.
+    const status = (error as { status?: number } | null)?.status
+    if (error && (status === undefined || status === 0 || status >= 500)) {
+      return NextResponse.json(
+        { error: "Couldn't reach Advance's server just now. Check your connection and try again." },
+        { status: 503 }
+      )
+    }
   }
 
   const admin = createServiceRoleSupabase()

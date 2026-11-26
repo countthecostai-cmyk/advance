@@ -32,12 +32,17 @@ export async function POST(request: NextRequest, { params }: { params: { token: 
 
   const status = parsed.data.result === 'handed_to_messages' ? 'handed_to_messages' : 'error'
 
-  await supabase
+  // Only a recipient this run actually claimed can be marked sent. A retried
+  // or duplicated progress call (flaky signal on the phone) must not write a
+  // second history row, and a stopped recipient must stay stopped.
+  const { data: marked } = await supabase
     .from('campaign_recipients')
     .update({ status, error_message: parsed.data.error_message ?? null, processed_at: new Date().toISOString() })
     .eq('id', recipient.id)
+    .in('status', ['claimed', 'pending'])
+    .select('id')
 
-  await supabase.from('messages').insert({
+  if (marked && marked.length > 0) await supabase.from('messages').insert({
     user_id: campaign.user_id,
     campaign_id: campaign.id,
     campaign_recipient_id: recipient.id,
