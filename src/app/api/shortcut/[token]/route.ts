@@ -60,8 +60,28 @@ export async function GET(request: Request, { params }: { params: { token: strin
     })
   }
 
+  // Claim only rows that are still 'pending' at the moment of the update, and
+  // hand out only the rows this call actually claimed. Without the status
+  // guard, two overlapping fetches (a double tap, or a scheduled run racing a
+  // manual one) could both read the same pending rows and send the same text
+  // twice.
   const ids = pending.map((p) => p.id)
-  await supabase.from('campaign_recipients').update({ status: 'claimed', claimed_at: new Date().toISOString() }).in('id', ids)
+  const { data: claimedRows, error: claimError } = await supabase
+    .from('campaign_recipients')
+    .update({ status: 'claimed', claimed_at: new Date().toISOString() })
+    .in('id', ids)
+    .eq('status', 'pending')
+    .select('id')
+  if (claimError) return NextResponse.json({ error: claimError.message }, { status: 500 })
+  const claimedIds = new Set((claimedRows ?? []).map((r) => r.id))
+  const batch = pending.filter((p) => claimedIds.has(p.id))
+  if (batch.length === 0) {
+    return NextResponse.json({
+      continue: false,
+      recipients: [],
+      message: 'Another send already picked up these recipients.',
+    })
+  }
 
   if (campaign.status === 'queued') {
     await supabase.from('campaigns').update({ status: 'sending' }).eq('id', campaign.id)
@@ -77,7 +97,7 @@ export async function GET(request: Request, { params }: { params: { token: strin
     action: 'shortcut.fetched_chunk',
     entityType: 'campaign',
     entityId: campaign.id,
-    metadata: { count: pending.length },
+    metadata: { count: batch.length },
   })
 
   return NextResponse.json({
@@ -87,7 +107,7 @@ export async function GET(request: Request, { params }: { params: { token: strin
     rate_limit_seconds: campaign.rate_limit_seconds,
     progress_url: `${appUrl}/api/shortcut/${params.token}/progress`,
     complete_url: `${appUrl}/api/shortcut/${params.token}/complete`,
-    recipients: pending.map((p) => ({
+    recipients: batch.map((p) => ({
       recipient_id: p.id,
       phone_number: p.phone_number,
       message: p.personalized_message,

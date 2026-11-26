@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
@@ -187,6 +188,21 @@ export default function SettingsPage() {
           <p className="mt-2 text-xs text-ink-400">
             Signing out clears this account — there&apos;s no email or password to sign back in with.
           </p>
+        </Card>
+
+        <Card>
+          <p className="mb-2 text-sm font-semibold text-ink-900">About</p>
+          <div className="flex flex-col gap-2 text-sm">
+            <Link href="/privacy" className="font-medium text-brand-600">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="font-medium text-brand-600">
+              Terms of Use
+            </Link>
+            <Link href="/support" className="font-medium text-brand-600">
+              Help &amp; support
+            </Link>
+          </div>
         </Card>
 
         <Card>

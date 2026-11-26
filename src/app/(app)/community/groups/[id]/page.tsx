@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card'
 import { getTerminology } from '@/lib/terminology'
 import { JoinButton } from './JoinButton'
 import { InviteCard } from './InviteCard'
+import { LeaveOrReport } from './LeaveOrReport'
 
 export default async function CommunityGroupDetailPage({ params }: { params: { id: string } }) {
   const supabase = createServerSupabase()
@@ -137,6 +138,13 @@ export default async function CommunityGroupDetailPage({ params }: { params: { i
           </div>
         </>
       )}
+
+      <LeaveOrReport
+        groupId={params.id}
+        groupName={group.name}
+        isMember={!!isMember}
+        leaveLabel={`Leave ${t.groupNoun.toLowerCase()}`}
+      />
     </div>
   )
 }

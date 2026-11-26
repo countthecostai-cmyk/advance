@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { SHORTCUT_NAME, SHORTCUT_ICLOUD_LINK } from '@/lib/constants'
+import { useIsNativeApp } from '@/lib/useIsNativeApp'
 
 export function ShortcutOnboarding({
   configured,
@@ -14,6 +15,7 @@ export function ShortcutOnboarding({
   configured: boolean
   onConfirm: () => Promise<void>
 }) {
+  const isNative = useIsNativeApp()
   const [confirming, setConfirming] = useState(false)
   // Once it's installed, the step-by-step instructions just clutter the
   // screen forever -- collapse to a single line, with a link to bring the
@@ -40,6 +42,41 @@ export function ShortcutOnboarding({
     )
   }
 
+  // Inside the App Store app there's no Safari tab to open and nothing to add
+  // to the Home Screen (the app is already there), so those steps only apply
+  // to the website.
+  const steps: React.ReactNode[] = SHORTCUT_ICLOUD_LINK
+    ? [
+        isNative
+          ? `Tap the button below to add the ${SHORTCUT_NAME} Shortcut. One tap, no manual setup.`
+          : `Open this page on your iPhone in Safari, then tap the button below to add the ${SHORTCUT_NAME} Shortcut. One tap, no manual setup.`,
+        'Allow the Contacts and Messages permissions when iOS asks.',
+        !isNative && (
+          <>
+            Add Advance to your Home Screen: Share → <strong>Add to Home Screen</strong>.
+          </>
+        ),
+        'Run a Test Mode send to yourself below before messaging anyone else.',
+      ]
+    : [
+        !isNative && 'Open this page on your iPhone in Safari (not another browser).',
+        <>
+          Build the <strong>{SHORTCUT_NAME}</strong> Shortcut using the exact steps in the{' '}
+          <Link href="/docs/shortcut" className="font-semibold text-brand-600">
+            build guide
+          </Link>
+          . It takes about 5 minutes, one time only.
+        </>,
+        'Allow the Contacts and Messages permissions when iOS asks.',
+        !isNative && (
+          <>
+            Add Advance to your Home Screen: Share → <strong>Add to Home Screen</strong>.
+          </>
+        ),
+        'Run a Test Mode send to yourself below before messaging anyone else.',
+      ]
+  const visibleSteps = steps.filter(Boolean)
+
   return (
     <Card>
       <div className="mb-3 flex items-center justify-between">
@@ -47,59 +84,16 @@ export function ShortcutOnboarding({
         {configured ? <Badge tone="success">Installed</Badge> : <Badge tone="warning">Not installed</Badge>}
       </div>
 
-      {SHORTCUT_ICLOUD_LINK ? (
-        <ol className="mb-4 flex flex-col gap-3 text-sm text-ink-700">
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">1</span>
-            <span>Open this page on your iPhone in Safari, then tap the button below to add the {SHORTCUT_NAME} Shortcut — one tap, no manual setup.</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">2</span>
-            <span>Allow the Contacts and Messages permissions when iOS asks.</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">3</span>
-            <span>
-              Add Advance to your Home Screen: Share → <strong>Add to Home Screen</strong>.
+      <ol className="mb-4 flex flex-col gap-3 text-sm text-ink-700">
+        {visibleSteps.map((step, i) => (
+          <li key={i} className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
+              {i + 1}
             </span>
+            <span>{step}</span>
           </li>
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">4</span>
-            <span>Run a Test Mode send to yourself below before messaging anyone else.</span>
-          </li>
-        </ol>
-      ) : (
-        <ol className="mb-4 flex flex-col gap-3 text-sm text-ink-700">
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">1</span>
-            <span>Open this page on your iPhone in Safari (not another browser).</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">2</span>
-            <span>
-              Build the <strong>{SHORTCUT_NAME}</strong> Shortcut using the exact steps in the{' '}
-              <Link href="/docs/shortcut" className="font-semibold text-brand-600">
-                build guide
-              </Link>{' '}
-              — takes about 5 minutes, one time only.
-            </span>
-          </li>
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">3</span>
-            <span>Allow the Contacts and Messages permissions when iOS asks.</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">4</span>
-            <span>
-              Add Advance to your Home Screen: Share → <strong>Add to Home Screen</strong>.
-            </span>
-          </li>
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">5</span>
-            <span>Run a Test Mode send to yourself below before messaging anyone else.</span>
-          </li>
-        </ol>
-      )}
+        ))}
+      </ol>
 
       {!configured && SHORTCUT_ICLOUD_LINK && (
         <a href={SHORTCUT_ICLOUD_LINK} className="mb-3 block">

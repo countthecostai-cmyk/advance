@@ -4,46 +4,44 @@ This file tracks everything needed to get Advance into the App Store, what's
 already done, and what still needs a Mac (or a cloud Mac build service) plus
 your Apple Developer account.
 
-## Already done (no Mac needed)
+## Already in this repo
 
-- **Privacy Policy**: live at `/privacy` (e.g. https://advance-nu-seven.vercel.app/privacy)
-- **Terms of Use**: live at `/terms`
-- **App Store icon**: `appstore-icon-1024.png` (sent separately in chat, not
-  committed to this repo since it's a binary file) — 1024×1024, flat square,
-  no transparency (Apple rejects icons with alpha/rounded corners baked in —
-  it adds the rounding itself). Save it somewhere you'll find it again before
-  generating the Xcode project.
-- **Native wrapper config**: `capacitor.config.ts` at the repo root. This
-  points a native iOS shell at the live Advance site (`server.url`), so the
-  App Store app always shows the real, current Advance — no separate
-  "native" codebase to keep in sync. Ordinary feature updates just deploy to
-  Vercel as usual; only icon/name/permission changes need a new App Store
-  build.
-- `@capacitor/cli`, `@capacitor/core`, `@capacitor/ios` added as dev
-  dependencies.
+- **iOS project**: `ios/` (Capacitor 8, Swift Package Manager, no
+  CocoaPods). Bundle ID `com.countthecostai.advance`, team `FD3ZZ9BJ6A`,
+  iPhone only, portrait, iOS 15+. It loads the live site
+  (`server.url` in `capacitor.config.ts`), so normal updates ship through
+  Vercel with no new App Store build.
+- **Icon and launch screen**: `npm run ios:assets` writes them into the
+  Xcode asset catalog (they aren't committed). Put a designed icon at
+  `store-assets/appstore-icon-1024.png` (1024×1024, no transparency) to use
+  it instead of the generated teal "A"; add `--force` to replace files
+  already there.
+- **Offline screen**: `public/native-offline.html`, shown by the app
+  instead of a blank screen when the site can't be reached.
+- **App-only behaviour**: native Contacts import; Safari and "Add to Home
+  Screen" steps hidden inside the app; the Shortcut download opens in
+  Safari so it imports into Shortcuts instead of breaking the app screen.
+- **Review basics**: Privacy Policy `/privacy`, Terms `/terms` (with a
+  no-objectionable-content section), Support `/support`, in-app account
+  deletion (Settings), leave group and report a concern on every group page.
+- **Listing copy and reviewer notes**: `store-assets/listing.md`.
 
-## Still needed (requires a Mac or a cloud Mac build service, + your Apple Developer account)
+## Building and submitting (on the Mac)
 
-1. **Register the App ID** in your Apple Developer account
-   (developer.apple.com → Certificates, IDs & Profiles) — suggested bundle ID
-   is `com.countthecostai.advance` (already set in `capacitor.config.ts`);
-   change it there first if you want a different one.
-2. **Generate the native iOS project**: `npx cap add ios` (needs CocoaPods,
-   which needs a Mac). This creates an `ios/` folder with an Xcode project.
-3. **Set the real app icon** inside the generated Xcode project from the
-   `appstore-icon-1024.png` file (Xcode's asset catalog can generate every
-   smaller size from the one 1024×1024 file).
-4. **Build, sign, and archive** in Xcode, or through a cloud Mac CI service
-   (for example Codemagic or GitHub Actions' macOS runners) using the App
-   Store Connect API key described below instead of your Apple ID password.
-5. **Create the app listing** in App Store Connect using the copy in
-   `store-assets/listing.md`.
-6. **Take screenshots** — once the app builds, screenshots can be captured
-   from the iOS Simulator (no physical device needed) at the required sizes.
-7. **Submit for review**, including the reviewer notes in `store-assets/listing.md`
-   explaining the Shortcut-based sending model up front — this is the single
-   biggest risk of rejection, since Apple scrutinizes anything that sends
-   bulk text messages.
+1. Merge the App Store fixes and let Vercel deploy them, because the app
+   shows the live site.
+2. `git pull`, then `npm install` and `npm run ios:sync` (writes the icon
+   and launch screen, copies the offline page, links the Contacts plugin).
+3. `npm run ios:open`, pick a real iPhone or a simulator and press Run to
+   check: first open lands on Home, Contacts permission prompt, a Test Mode
+   send, airplane mode shows the offline screen.
+4. Raise the build number (target → General → Build) above the last one
+   uploaded, then Product → Archive → Distribute App → App Store Connect.
+5. In App Store Connect: pick the new build, paste the reviewer notes from
+   `store-assets/listing.md`, add screenshots, answer App Privacy (Contact
+   Info: name and phone number, used for app functionality, not tracking),
+   and reply to the earlier rejection in Resolution Center saying what
+   changed. Then submit.
 
 ## Giving Claude safe access (no password needed)
 

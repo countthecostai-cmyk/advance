@@ -31,7 +31,12 @@ export default function SignupPage() {
         return
       }
 
-      router.replace('/home')
+      // Send people back to where they were headed (the middleware puts it
+      // in ?next=) instead of always dumping them on Home. Only same-site
+      // paths are allowed so this can't be used as an open redirect.
+      const next = new URLSearchParams(window.location.search).get('next')
+      const safeNext = next && next.startsWith('/') && !next.startsWith('//') && !next.includes('\\') ? next : '/home'
+      router.replace(safeNext)
       router.refresh()
     }
 

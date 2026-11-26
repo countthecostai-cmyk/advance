@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Advance</title>
+<!--
+  Shown by the iPhone app (Capacitor `server.errorPath`) when it can't reach
+  Advance, instead of a blank white screen. It's bundled inside the app, so
+  it works with no connection at all. It retries by itself as soon as the
+  phone is back online.
+-->
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; height: 100%; background: #000; color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; }
+  main { min-height: 100%; box-sizing: border-box; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px; text-align: center;
+    padding: calc(24px + env(safe-area-inset-top)) 28px calc(24px + env(safe-area-inset-bottom)); }
+  .mark { width: 64px; height: 64px; border-radius: 16px; background: #14171f;
+    display: flex; align-items: center; justify-content: center;
+    color: #5eead4; font-size: 34px; font-weight: 700; }
+  h1 { margin: 6px 0 0; font-size: 20px; font-weight: 600; }
+  p { margin: 0; max-width: 290px; font-size: 15px; line-height: 1.45; color: #a3a9b6; }
+  button { margin-top: 8px; border: 0; border-radius: 12px; background: #5eead4; color: #0b1215;
+    font: inherit; font-size: 16px; font-weight: 600; padding: 13px 28px; }
+  button:active { opacity: .8; }
+  .small { font-size: 13px; color: #6b7280; }
+</style>
+</head>
+<body>
+<main>
+  <div class="mark" aria-hidden="true">A</div>
+  <h1>Can't reach Advance</h1>
+  <p>Check that you have Wi-Fi or cellular data. Advance will reload by itself once you're back online.</p>
+  <button id="retry" type="button">Try again</button>
+  <p class="small" id="status" role="status" aria-live="polite"></p>
+</main>
+<script>
+  var APP_URL = 'https://advance-nu-seven.vercel.app/home'
+  var status = document.getElementById('status')
+  function retry() {
+    status.textContent = 'Connecting…'
+    window.location.replace(APP_URL)
+  }
+  document.getElementById('retry').addEventListener('click', retry)
+  window.addEventListener('online', retry)
+</script>
+</body>
+</html>

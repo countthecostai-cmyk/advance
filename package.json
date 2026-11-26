@@ -9,7 +9,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "ios:assets": "node scripts/write-ios-assets.js",
+    "ios:sync": "node scripts/write-ios-assets.js && cap sync ios",
+    "ios:open": "cap open ios"
   },
   "dependencies": {
     "@capacitor-community/contacts": "^8.0.0",
