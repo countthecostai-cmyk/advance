@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { SHORTCUT_NAME } from '@/lib/constants'
+import { useIsNativeApp } from '@/lib/useIsNativeApp'
 
 function ago(iso: string | null) {
   if (!iso) return null
@@ -19,6 +20,7 @@ const btn = 'inline-block rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibol
 
 export default function AutoSendPage() {
   const router = useRouter()
+  const isNative = useIsNativeApp()
   const [url, setUrl] = useState('')
   const [last, setLast] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
@@ -79,13 +81,16 @@ export default function AutoSendPage() {
 
       <Card className="mb-3">
         <p className="mb-2 text-sm font-semibold text-ink-900">Set up on your iPhone (about 2 minutes)</p>
-        <p className="mb-3 text-xs text-ink-400">Open this page in Safari on your iPhone.</p>
+        {!isNative && <p className="mb-3 text-xs text-ink-400">Open this page in Safari on your iPhone.</p>}
         <ol className="list-decimal space-y-4 pl-5 text-sm text-ink-600">
           <li>
             Tap <b>Add the shortcut</b>. If Safari asks, tap <b>Download</b>, then open the download and tap <b>Add Shortcut</b>.
             <div className="mt-2">
               {addUrl ? (
-                <a href={addUrl} className={btn}>
+                // In the iPhone app a same-site download would replace the app's
+                // screen with a file it can't show; a new window makes the app
+                // hand it to Safari, which passes it to Shortcuts.
+                <a href={addUrl} className={btn} {...(isNative ? { target: '_blank', rel: 'noopener' } : {})}>
                   Add the shortcut
                 </a>
               ) : null}

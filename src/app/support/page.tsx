@@ -1,3 +1,5 @@
+import { BackLink } from '@/components/ui/BackLink'
+
 export const metadata = { title: 'Support' }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -12,6 +14,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function SupportPage() {
   return (
     <div className="mx-auto max-w-lg px-4 py-10 safe-top safe-bottom safe-x">
+      <BackLink />
       <h1 className="mb-1 text-2xl font-bold text-ink-900">Support</h1>
       <p className="mb-6 text-xs text-ink-400">Advance — help &amp; contact</p>
 

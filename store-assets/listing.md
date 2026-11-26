@@ -32,7 +32,7 @@ church app, life group, small group, pastor tools, mass text, group
 messaging, ministry, community, attendance, follow up
 
 ## Support URL
-https://advance-nu-seven.vercel.app/docs/shortcut (or a dedicated support page/email — confirm before submitting)
+https://advance-nu-seven.vercel.app/support
 
 ## Marketing URL (optional)
 https://advance-nu-seven.vercel.app
@@ -49,23 +49,34 @@ https://advance-nu-seven.vercel.app/privacy
 
 ## Review notes (paste into "Notes for Reviewer" in App Store Connect)
 
-Advance does not send bulk or automated text messages from its own servers.
-All sending happens through Apple's own Shortcuts app and Messages app, on
-the user's own iPhone, using the user's own phone number and their own
-cellular/iMessage connection — the same as if they manually selected
-contacts and sent a group text themselves. Advance's role is limited to
-organizing contacts/groups and handing off the already-approved list of
-recipients and message text to the Shortcut, which the user runs themselves
-on their own device.
+No sign-in or demo account is needed. Advance creates a private account
+automatically the first time the app opens, so you land straight on Home.
 
-To test:
-1. [Provide a demo account or test credentials here before submitting]
-2. Add a contact under Contacts
-3. Create a campaign under Campaigns, selecting that contact
-4. Tap Send — this opens the Advance Sender Shortcut, which the reviewer can
-   run in Test Mode to see it only affects the signed-in user's own phone
-   number, never an arbitrary list of strangers.
+What the app does on the device (beyond showing web content):
+- Contacts: Settings → "Connect my Contacts" asks for iOS Contacts
+  permission and imports the people you pick, using the native Contacts
+  framework.
+- Sending: Advance never sends texts from its servers. Tapping Send hands
+  the recipient list and message to Apple's Shortcuts app ("Advance
+  Sender"), which sends each one through the Messages app from the user's
+  own phone number. The user runs the shortcut themselves.
+- Works without a connection: if the phone is offline, a built-in screen
+  says so and reloads by itself when the connection returns.
 
-All recipients must have an existing relationship with the sender (contacts
-they added themselves), and anyone can opt out at any time by replying STOP,
-which Advance enforces automatically on every future send.
+Groups: people only join a group by invite. Anyone can leave a group, or
+report a person, group or event, from the group's page, and the Terms
+(Settings → About → Terms of Use) prohibit objectionable content. Reports go to
+countthecostai@gmail.com and are handled within 24 hours.
+
+Account deletion: Settings → "Delete my account" permanently erases the
+account and its data right away. Privacy Policy, Terms and Support are
+under Settings → About.
+
+To try it:
+1. Open the app (no sign-in).
+2. Contacts → add a contact (or Settings → Connect my Contacts).
+3. Campaigns → new campaign → pick that contact → Send in Test Mode, which
+   only messages the user's own number.
+
+Recipients are people the user added themselves, and anyone can reply STOP
+to opt out, which Advance enforces on every later send.

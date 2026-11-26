@@ -7,8 +7,8 @@ import type { CapacitorConfig } from '@capacitor/cli'
 // no separate release needed for ordinary feature/bugfix changes (only
 // icon/name/permission changes require a new App Store build).
 //
-// appId is a placeholder -- replace with your own reverse-DNS identifier
-// registered in your Apple Developer account before running `npx cap add ios`.
+// appId must match the App ID registered in the Apple Developer account
+// (it is also set as PRODUCT_BUNDLE_IDENTIFIER in the Xcode project).
 const config: CapacitorConfig = {
   appId: 'com.countthecostai.advance',
   appName: 'Advance',
@@ -16,6 +16,11 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://advance-nu-seven.vercel.app',
     cleartext: false,
+    // Bundled page shown when the site can't be reached (no signal, Vercel
+    // down) instead of a blank screen. It lives in `public/`, which is
+    // copied into the app by `npx cap sync`. Keep its retry URL in step with
+    // `url` above if the domain ever changes.
+    errorPath: 'native-offline.html',
   },
   ios: {
     contentInset: 'always',

@@ -1,3 +1,5 @@
+import { BackLink } from '@/components/ui/BackLink'
+
 export const metadata = { title: 'Terms of Use' }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -12,6 +14,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function TermsPage() {
   return (
     <div className="mx-auto max-w-lg px-4 py-10 safe-top safe-bottom safe-x">
+      <BackLink />
       <h1 className="mb-1 text-2xl font-bold text-ink-900">Terms of Use</h1>
       <p className="mb-6 text-xs text-ink-400">Last updated October 2026</p>
 
@@ -29,6 +32,22 @@ export default function TermsPage() {
           <li>Honor opt-outs immediately — Advance tracks STOP replies automatically.</li>
           <li>Don&apos;t use Advance to send spam, scams, or anything illegal or harassing.</li>
           <li>You&apos;re responsible for complying with texting laws that apply where you and your recipients are.</li>
+        </ul>
+      </Section>
+
+      <Section title="Groups and shared content">
+        <ul className="ml-4 list-disc">
+          <li>
+            Names, group details and events you add in a group are seen by its other members. There&apos;s no
+            tolerance for objectionable, abusive, hateful or sexual content, or for harassing anyone.
+          </li>
+          <li>
+            You can leave any group from its page. To report a person, group or event, tap &quot;Report a concern
+            about this group&quot; on the group&apos;s page or email countthecostai@gmail.com.
+          </li>
+          <li>
+            We review reports within 24 hours, remove content that breaks these rules, and remove people who post it.
+          </li>
         </ul>
       </Section>
 
