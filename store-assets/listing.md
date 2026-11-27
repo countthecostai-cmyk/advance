@@ -84,8 +84,11 @@ under Settings → About.
 To try it:
 1. Open the app (no sign-in).
 2. Contacts → add a contact (or Settings → Connect my Contacts).
-3. Campaigns → new campaign → pick that contact → Send in Test Mode, which
-   only messages the user's own number.
+3. Advance tab → New advance → pick that contact → turn on "Send only to
+   your own number first" (Test Mode), so only the user's own number is
+   messaged.
+4. Groups tab → open a group → Leave or "Report a concern about this group"
+   at the bottom.
 
 Recipients are people the user added themselves, and anyone can reply STOP
 to opt out, which Advance enforces on every later send.
