@@ -71,8 +71,9 @@ What the app does on the device (beyond showing web content):
 - Works without a connection: if the phone is offline, a built-in screen
   says so and reloads by itself when the connection returns.
 
-Groups: people only join a group by invite. Anyone can leave a group, or
-report a person, group or event, from the group's page, and the Terms
+Groups: people only join a group by invite. From the group's page, anyone
+can leave it or tap "Report a concern about this group" to report the group
+or anyone or anything in it, and the Terms
 (Settings → About → Terms of Use) prohibit objectionable content. Reports go to
 countthecostai@gmail.com and are handled within 24 hours.
 
