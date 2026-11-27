@@ -87,7 +87,7 @@ To try it:
 3. Advance tab → New advance → pick that contact → turn on "Send only to
    your own number first" (Test Mode), so only the user's own number is
    messaged.
-4. Groups tab → open a group → Leave or "Report a concern about this group"
+4. Groups tab → create or open a group → Leave or "Report a concern about this group"
    at the bottom.
 
 Recipients are people the user added themselves, and anyone can reply STOP
