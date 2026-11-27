@@ -16,7 +16,7 @@ export default function PrivacyPolicyPage() {
     <div className="mx-auto max-w-lg px-4 py-10 safe-top safe-bottom safe-x">
       <BackLink />
       <h1 className="mb-1 text-2xl font-bold text-ink-900">Privacy Policy</h1>
-      <p className="mb-6 text-xs text-ink-400">Last updated October 2026</p>
+      <p className="mb-6 text-xs text-ink-400">Last updated November 2026</p>
 
       <Section title="What Advance is">
         <p>
@@ -57,9 +57,16 @@ export default function PrivacyPolicyPage() {
 
       <Section title="Contacts you add">
         <p>
-          Advance lets you add contacts from your iPhone&apos;s Contacts app (either by picking them inside the app,
-          or by sharing one straight from the Contacts app). Only the name and phone number of people you choose to
-          add are sent to Advance — nothing else on your phone is read or accessed.
+          You can add people one at a time, from a CSV file, or, in the iPhone app, by tapping Settings → &quot;Connect
+          my Contacts&quot;. Before anything is uploaded, Advance shows what will happen and then asks for iPhone&apos;s
+          Contacts permission. If you allow it, Advance uploads the name and phone number of each contact that has
+          both to your Advance account. Nothing else on your phone (emails, addresses, photos, notes) is read.
+        </p>
+        <p className="mt-3">
+          Uploaded contacts are stored only in your own account and used only so you can pick who to message. We
+          never share or sell them, never use them for advertising, never match them against other users, and never
+          contact anyone on our own: a message only goes out when you send it from your own phone. Deleting a contact
+          removes it from our servers, and deleting your account removes all of them.
         </p>
       </Section>
 

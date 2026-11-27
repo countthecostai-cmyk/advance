@@ -41,9 +41,13 @@ https://advance-nu-seven.vercel.app
 https://advance-nu-seven.vercel.app/privacy
 
 ## App Privacy details (for the App Store Connect questionnaire)
-- **Contact Info** (name, phone number): collected, linked to the user's
-  account, used only for app functionality (not for tracking or
+- **Contacts** (names and phone numbers from the iPhone address book, only
+  if the user taps Connect my Contacts and allows it): collected, linked to
+  the user's account, used only for app functionality (not for tracking or
   advertising).
+- **Contact Info** (names and phone numbers of people the user adds by
+  hand): collected, linked to the user's account, used only for app
+  functionality.
 - **Identifiers**: none collected beyond the account's own ID.
 - **No data is used for advertising or sold to third parties.**
 
@@ -53,9 +57,13 @@ No sign-in or demo account is needed. Advance creates a private account
 automatically the first time the app opens, so you land straight on Home.
 
 What the app does on the device (beyond showing web content):
-- Contacts: Settings → "Connect my Contacts" asks for iOS Contacts
-  permission and imports the people you pick, using the native Contacts
-  framework.
+- Contacts: Settings → "Connect my Contacts" first explains what will be
+  uploaded, then asks for iOS Contacts permission. If allowed, it uploads
+  the name and phone number of each contact that has both to the user's
+  own Advance account. They are used only so the user can choose who to
+  message, are never shared, sold or used for ads, and nobody is contacted
+  unless the user sends a message themselves. Deleting a contact or the
+  account removes them from our servers.
 - Sending: Advance never sends texts from its servers. Tapping Send hands
   the recipient list and message to Apple's Shortcuts app ("Advance
   Sender"), which sends each one through the Messages app from the user's

@@ -27,7 +27,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSContactsUsageDescription</key>
-	<string>Advance uses your Contacts to let you add people to your lists without typing their numbers by hand. Nothing is shared or messaged without you choosing to.</string>
+	<string>Advance uploads the names and phone numbers of your contacts to your private Advance account so you can add people to your lists without typing. They are never shared or sold, and no one is messaged unless you send it.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
