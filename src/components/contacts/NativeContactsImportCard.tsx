@@ -11,11 +11,13 @@ import { useIsNativeApp } from '@/lib/useIsNativeApp'
 // Contacts access on iOS no matter what, that's an Apple rule Advance can't
 // route around. Inside the App Store app it can: this uses the device's own
 // "Allow Advance to access your Contacts?" permission prompt, same as any
-// other iPhone app, then pulls every contact straight in -- no Shortcut,
-// no link, no copy-pasting a URL.
+// other iPhone app, then uploads the name and first phone number of every
+// contact to the person's own account. An in-app explainer comes first and
+// says exactly that, because App Review asks whether contacts are uploaded
+// and what happens to them.
 export function NativeContactsImportCard({ configured }: { configured: boolean }) {
   const isNative = useIsNativeApp()
-  const [status, setStatus] = useState<'idle' | 'running' | 'done' | 'denied' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'confirm' | 'running' | 'done' | 'denied' | 'error'>('idle')
   const [result, setResult] = useState<{ imported: number; updated: number; failed: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -100,13 +102,39 @@ export function NativeContactsImportCard({ configured }: { configured: boolean }
         {configured ? <Badge tone="success">Connected</Badge> : <Badge tone="warning">Not connected</Badge>}
       </div>
       <p className="mb-4 text-xs text-ink-500">
-        One tap, one native iPhone permission prompt — Advance pulls in everyone from your Contacts app with a phone
-        number. No Shortcut to build, no link to copy.
+        Uploads the names and phone numbers from your iPhone Contacts to your private Advance account, so you can add
+        people to your lists without typing. You&apos;ll see exactly what&apos;s uploaded before anything leaves your phone.
       </p>
 
-      <Button fullWidth size="sm" onClick={connect} loading={status === 'running'}>
-        {configured ? 'Sync my Contacts again' : 'Connect my Contacts'}
-      </Button>
+      {status === 'confirm' ? (
+        // Asked before the iOS permission prompt and before anything leaves
+        // the phone, so the person knows exactly what is uploaded and why
+        // (App Review guideline 5.1.1 / 5.1.2).
+        <div className="space-y-3 border border-ink-300 bg-ink-100 p-3">
+          <p className="text-xs font-semibold text-ink-900">Upload your contacts to Advance?</p>
+          <ul className="ml-4 list-disc space-y-1 text-xs text-ink-600">
+            <li>
+              Advance uploads the name and phone number of each contact that has both. Nothing else (emails,
+              addresses, photos, notes) is read.
+            </li>
+            <li>They&apos;re saved only in your private Advance account so you can pick who to message.</li>
+            <li>They&apos;re never shared, sold or used for ads, and no one is ever contacted unless you send it.</li>
+            <li>You can delete any contact, or your whole account and everything in it, at any time.</li>
+          </ul>
+          <div className="flex gap-2">
+            <Button size="sm" variant="secondary" onClick={() => setStatus('idle')}>
+              Not now
+            </Button>
+            <Button size="sm" className="flex-1" onClick={connect}>
+              Allow and upload
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <Button fullWidth size="sm" onClick={() => setStatus('confirm')} loading={status === 'running'}>
+          {configured ? 'Sync my Contacts again' : 'Connect my Contacts'}
+        </Button>
+      )}
 
       {status === 'denied' && (
         <p className="mt-3 text-xs text-ink-400">

@@ -41,9 +41,13 @@ https://advance-nu-seven.vercel.app
 https://advance-nu-seven.vercel.app/privacy
 
 ## App Privacy details (for the App Store Connect questionnaire)
-- **Contact Info** (name, phone number): collected, linked to the user's
-  account, used only for app functionality (not for tracking or
+- **Contacts** (names and phone numbers from the iPhone address book, only
+  if the user taps Connect my Contacts and allows it): collected, linked to
+  the user's account, used only for app functionality (not for tracking or
   advertising).
+- **Contact Info** (names and phone numbers of people the user adds by
+  hand): collected, linked to the user's account, used only for app
+  functionality.
 - **Identifiers**: none collected beyond the account's own ID.
 - **No data is used for advertising or sold to third parties.**
 
@@ -53,9 +57,13 @@ No sign-in or demo account is needed. Advance creates a private account
 automatically the first time the app opens, so you land straight on Home.
 
 What the app does on the device (beyond showing web content):
-- Contacts: Settings → "Connect my Contacts" asks for iOS Contacts
-  permission and imports the people you pick, using the native Contacts
-  framework.
+- Contacts: Settings → "Connect my Contacts" first explains what will be
+  uploaded, then asks for iOS Contacts permission. If allowed, it uploads
+  the name and phone number of each contact that has both to the user's
+  own Advance account. They are used only so the user can choose who to
+  message, are never shared, sold or used for ads, and nobody is contacted
+  unless the user sends a message themselves. Deleting a contact or the
+  account removes them from our servers.
 - Sending: Advance never sends texts from its servers. Tapping Send hands
   the recipient list and message to Apple's Shortcuts app ("Advance
   Sender"), which sends each one through the Messages app from the user's
@@ -63,8 +71,9 @@ What the app does on the device (beyond showing web content):
 - Works without a connection: if the phone is offline, a built-in screen
   says so and reloads by itself when the connection returns.
 
-Groups: people only join a group by invite. Anyone can leave a group, or
-report a person, group or event, from the group's page, and the Terms
+Groups: people only join a group by invite. From the group's page, anyone
+can leave it or tap "Report a concern about this group" to report the group
+or anyone or anything in it, and the Terms
 (Settings → About → Terms of Use) prohibit objectionable content. Reports go to
 countthecostai@gmail.com and are handled within 24 hours.
 
@@ -75,8 +84,11 @@ under Settings → About.
 To try it:
 1. Open the app (no sign-in).
 2. Contacts → add a contact (or Settings → Connect my Contacts).
-3. Campaigns → new campaign → pick that contact → Send in Test Mode, which
-   only messages the user's own number.
+3. Advance tab → New advance → pick that contact → turn on "Send only to
+   your own number first" (Test Mode), so only the user's own number is
+   messaged.
+4. Groups tab → create or open a group → Leave or "Report a concern about this group"
+   at the bottom.
 
 Recipients are people the user added themselves, and anyone can reply STOP
 to opt out, which Advance enforces on every later send.
